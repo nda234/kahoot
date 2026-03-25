@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)file:///C:/Users/0189334/Downloads/tournoi_centiemes%20(1).html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🏆 Tournoi des Centièmes</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Montserrat',Arial,sans-serif;background:#0a0a0a;min-height:100vh;overflow-x:hidden;}
+
+.bg{position:fixed;inset:0;background:linear-gradient(135deg,#0a0a1a,#1a0a2e,#0a1a0a);z-index:0;}
+
+.screen{display:none;position:relative;z-index:1;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;}
+
+/* ── INTRO ── */
+#intro{text-align:center;}
+.stadium{font-size:72px;margin-bottom:1rem;animation:stadiumPulse 2s ease-in-out infinite;}
+@keyframes stadiumPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}}
+.tournament-title{font-size:34px;font-weight:900;color:#fff;margin-bottom:.3rem;text-shadow:0 0 30px rgba(74,222,128,.4);}
+.tournament-sub{font-size:13px;color:#4ade80;margin-bottom:.3rem;}
+.tournament-desc{font-size:13px;color:#6b7280;max-width:460px;line-height:1.7;margin:0 auto 1.5rem;}
+
+/* BRACKETS PREVIEW */
+.bracket-preview{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:center;max-width:400px;margin:0 auto 1.5rem;}
+.bp-col{display:flex;flex-direction:column;gap:8px;}
+.bp-item{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:8px;padding:.5rem .8rem;font-size:11px;color:#4ade80;font-weight:700;}
+.bp-vs{font-size:24px;font-weight:900;color:#fbbf24;text-align:center;}
+.bp-final{background:rgba(251,191,36,.15);border:2px solid #fbbf24;border-radius:10px;padding:.6rem 1rem;font-size:12px;color:#fbbf24;font-weight:700;text-align:center;margin-top:.5rem;}
+
+.btn-tournament{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;border-radius:50px;padding:16px 48px;font-size:18px;font-weight:900;cursor:pointer;box-shadow:0 8px 30px rgba(22,163,74,.4);transition:transform .15s;}
+.btn-tournament:hover{transform:translateY(-3px);}
+
+/* ── BRACKET SCREEN ── */
+#bracket-screen{padding:1rem;}
+.bracket-header{width:100%;max-width:800px;display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.bracket-stage{font-size:14px;font-weight:700;color:#4ade80;}
+.bracket-timer{font-size:22px;font-weight:900;color:#fff;}
+.bracket-timer.urgent{color:#ef4444;}
+
+/* STAGE BANNER */
+.stage-banner{width:100%;max-width:800px;background:linear-gradient(135deg,rgba(22,163,74,.15),rgba(21,128,61,.1));border:1px solid rgba(74,222,128,.3);border-radius:12px;padding:.8rem 1.2rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;}
+.stage-name{font-size:14px;font-weight:700;color:#4ade80;}
+.stage-round{font-size:11px;color:#6b7280;}
+
+/* BATTLE CARD */
+.battle-card{width:100%;max-width:800px;display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:stretch;margin-bottom:1rem;}
+.fighter-card{background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.1);border-radius:16px;padding:1.2rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.fighter-card:hover{border-color:#4ade80;background:rgba(74,222,128,.08);transform:scale(1.02);}
+.fighter-card:active{transform:scale(.98);}
+.fighter-card.selected{border-color:#4ade80;background:rgba(74,222,128,.15);}
+.fighter-card.correct{border-color:#4ade80;background:rgba(74,222,128,.2);}
+.fighter-card.wrong{border-color:#ef4444;background:rgba(239,68,68,.1);opacity:.5;}
+.fighter-card:disabled{cursor:default;pointer-events:none;}
+.fighter-icon{font-size:40px;margin-bottom:.5rem;display:block;}
+.fighter-label{font-size:11px;color:#6b7280;font-weight:700;letter-spacing:.05em;margin-bottom:.3rem;}
+.fighter-value{font-size:22px;font-weight:900;color:#fff;}
+.fighter-sub{font-size:11px;color:#6b7280;margin-top:.2rem;}
+.vs-col{display:flex;align-items:center;justify-content:center;}
+.vs-badge{background:rgba(251,191,36,.15);border:2px solid #fbbf24;border-radius:50%;width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fbbf24;}
+
+/* QUESTION */
+.tournament-question{width:100%;max-width:800px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:1.2rem;margin-bottom:1rem;}
+.tq-label{font-size:10px;font-weight:700;color:#6b7280;letter-spacing:.08em;margin-bottom:.4rem;}
+.tq-text{font-size:16px;font-weight:700;color:#e2e8f0;line-height:1.5;}
+.tq-ctx{font-size:12px;color:#4b5563;font-style:italic;margin-top:.3rem;}
+
+/* PROGRESS BAR */
+.timer-progress{width:100%;max-width:800px;height:6px;background:rgba(255,255,255,.08);border-radius:3px;margin-bottom:1rem;overflow:hidden;}
+.timer-prog-fill{height:100%;background:linear-gradient(90deg,#4ade80,#22c55e);border-radius:3px;transition:width .1s linear;}
+.timer-prog-fill.warn{background:linear-gradient(90deg,#fbbf24,#d97706);}
+.timer-prog-fill.danger{background:linear-gradient(90deg,#ef4444,#dc2626);}
+
+/* FEEDBACK */
+.tournament-feedback{width:100%;max-width:800px;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1rem;display:none;border-left:4px solid;}
+.tournament-feedback.show{display:block;}
+.tf-correct{background:rgba(5,46,22,.8);border-color:#4ade80;}
+.tf-wrong{background:rgba(69,10,10,.8);border-color:#ef4444;}
+.tf-title{font-size:15px;font-weight:900;margin-bottom:.4rem;}
+.tf-correct .tf-title{color:#4ade80;}
+.tf-wrong .tf-title{color:#ef4444;}
+.tf-body{font-size:13px;color:#cbd5e1;line-height:1.6;}
+.tf-formula{font-size:12px;color:#4ade80;font-weight:700;margin-top:.4rem;background:rgba(74,222,128,.1);padding:.4rem .8rem;border-radius:8px;display:inline-block;}
+.tf-law{font-size:11px;color:#374151;margin-top:.3rem;font-style:italic;}
+.btn-next-round{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;border-radius:50px;padding:12px 36px;font-size:14px;font-weight:900;cursor:pointer;margin-top:.8rem;display:none;}
+.btn-next-round.show{display:inline-block;}
+
+/* ── BRACKET VISUAL ── */
+#bracket-visual{padding:1rem;}
+.bv-title{font-size:20px;font-weight:900;color:#fff;text-align:center;margin-bottom:1.5rem;}
+.bv-grid{display:flex;gap:1.5rem;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem;width:100%;max-width:800px;}
+.bv-round{display:flex;flex-direction:column;gap:1rem;align-items:center;}
+.bv-round-label{font-size:10px;font-weight:700;color:#4b5563;letter-spacing:.1em;margin-bottom:.3rem;text-align:center;}
+.bv-match{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.6rem .9rem;width:160px;text-align:center;}
+.bv-match.done .bv-winner{color:#4ade80;font-weight:700;}
+.bv-match.done .bv-loser{color:#ef4444;opacity:.5;text-decoration:line-through;}
+.bv-match.current{border-color:#fbbf24;background:rgba(251,191,36,.05);}
+.bv-player{font-size:12px;padding:3px 0;}
+.bv-connector{width:20px;height:2px;background:rgba(255,255,255,.1);}
+.btn-final{background:linear-gradient(135deg,#d97706,#92400e);color:#fff;border:none;border-radius:50px;padding:14px 40px;font-size:16px;font-weight:900;cursor:pointer;box-shadow:0 6px 24px rgba(217,119,6,.4);}
+
+/* ── CHAMPION ── */
+#champion{text-align:center;}
+.champ-trophy{font-size:90px;animation:champFloat 2s ease-in-out infinite;margin-bottom:.8rem;}
+@keyframes champFloat{0%,100%{transform:translateY(0) rotate(-3deg);}50%{transform:translateY(-15px) rotate(3deg);}}
+.champ-title{font-size:13px;font-weight:700;color:#fbbf24;letter-spacing:.15em;margin-bottom:.5rem;}
+.champ-name{font-size:36px;font-weight:900;color:#fff;margin-bottom:.5rem;}
+.champ-score{font-size:48px;font-weight:900;color:#4ade80;margin-bottom:.3rem;}
+.champ-lbl{font-size:13px;color:#6b7280;margin-bottom:2rem;}
+
+/* OVERLAYS */
+.cf{position:fixed;top:-20px;animation:cfall linear forwards;pointer-events:none;z-index:9999;border-radius:2px;}
+@keyframes cfall{to{transform:translateY(110vh) rotate(540deg);opacity:0;}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+
+<!-- INTRO -->
+<div class="screen active" id="intro">
+  <div class="stadium">🏟️</div>
+  <div class="tournament-title">Tournoi des Centièmes</div>
+  <div class="tournament-sub">⚡ Diapositive 26 — Calcul Horaire</div>
+  <div class="tournament-desc">4 équipes s'affrontent en duel ! Chaque match = un calcul de centièmes à résoudre. L'équipe qui clique la bonne réponse en premier remporte le match. Qui sera champion ?</div>
+
+  <div class="bracket-preview">
+    <div class="bp-col">
+      <div class="bp-item">🔥 Équipe A</div>
+      <div class="bp-item">⚡ Équipe B</div>
+    </div>
+    <div class="bp-vs">⚔️</div>
+    <div class="bp-col">
+      <div class="bp-item">🚀 Équipe C</div>
+      <div class="bp-item">💪 Équipe D</div>
+    </div>
+  </div>
+  <div class="bp-final">🏆 GRANDE FINALE</div>
+  <br>
+  <button class="btn-tournament" onclick="startTournament()">🏆 Lancer le Tournoi !</button>
+</div>
+
+<!-- MATCH -->
+<div class="screen" id="bracket-screen">
+  <div class="bracket-header">
+    <div class="bracket-stage" id="match-stage">QUART DE FINALE</div>
+    <div class="bracket-timer" id="match-timer">30</div>
+  </div>
+
+  <div class="stage-banner">
+    <div class="stage-name" id="stage-name">⚔️ MATCH 1</div>
+    <div class="stage-round" id="stage-round">Tour 1/3</div>
+  </div>
+
+  <div class="timer-progress"><div class="timer-prog-fill" id="tpf" style="width:100%"></div></div>
+
+  <div class="tournament-question">
+    <div class="tq-label">⚡ CALCUL ÉCLAIR — QUI RÉPOND EN PREMIER ?</div>
+    <div class="tq-text" id="tq-text">...</div>
+    <div class="tq-ctx" id="tq-ctx"></div>
+  </div>
+
+  <div class="battle-card">
+    <button class="fighter-card" id="fc-left" onclick="pickSide(&#39;left&#39;)">
+      <span class="fighter-icon" id="fi-left">🔥</span>
+      <div class="fighter-label" id="fl-left">ÉQUIPE A</div>
+      <div class="fighter-value" id="fv-left">—</div>
+      <div class="fighter-sub" id="fs-left">Clique pour répondre</div>
+    </button>
+    <div class="vs-col"><div class="vs-badge">VS</div></div>
+    <button class="fighter-card" id="fc-right" onclick="pickSide(&#39;right&#39;)">
+      <span class="fighter-icon" id="fi-right">⚡</span>
+      <div class="fighter-label" id="fl-right">ÉQUIPE B</div>
+      <div class="fighter-value" id="fv-right">—</div>
+      <div class="fighter-sub" id="fs-right">Clique pour répondre</div>
+    </button>
+  </div>
+
+  <div class="tournament-feedback" id="tfb">
+    <div class="tf-title" id="tf-title"></div>
+    <div class="tf-body" id="tf-body"></div>
+    <div class="tf-formula" id="tf-formula"></div>
+    <div class="tf-law" id="tf-law"></div>
+    <button class="btn-next-round" id="btn-next-round" onclick="nextMatch()">Match suivant →</button>
+  </div>
+</div>
+
+<!-- BRACKET VISUAL -->
+<div class="screen" id="bracket-visual">
+  <div class="bv-title">🏆 Tableau du Tournoi</div>
+  <div class="bv-grid" id="bv-grid"></div>
+  <button class="btn-final" id="btn-continue-bracket" onclick="continueFromBracket()">Continuer ▶</button>
+</div>
+
+<!-- CHAMPION -->
+<div class="screen" id="champion">
+  <div class="champ-trophy">🏆</div>
+  <div class="champ-title">🎉 CHAMPION DES CENTIÈMES !</div>
+  <div class="champ-name" id="champ-name">Équipe A</div>
+  <div class="champ-score" id="champ-score">0</div>
+  <div class="champ-lbl">points</div>
+  <button class="btn-tournament" onclick="restart()" style="font-size:15px;padding:13px 36px;">🔄 Nouveau Tournoi</button>
+</div>
+
+<script>
+// ── MATCHES ──────────────────────────────────────────────
+const QUESTIONS = [
+  // DEMI-FINALES
+  {
+    stage:'DEMI-FINALE', matchName:'⚔️ MATCH 1',
+    q:'Convertis 45 minutes en centièmes',ctx:'Formule : minutes × 100 ÷ 60',
+    leftLabel:'0,75', rightLabel:'0,85',
+    leftCorrect:true,
+    expl:'45 × 100 ÷ 60 = 4500 ÷ 60 = 75 centièmes = 0,75',
+    formula:'45 × 100 ÷ 60 = 0,75',
+    loi:'Calcul centièmes — Art. contrat de travail'
+  },
+  {
+    stage:'DEMI-FINALE', matchName:'⚔️ MATCH 2',
+    q:'Convertis 0,25 centièmes en minutes',ctx:'Formule : centièmes × 60 ÷ 100',
+    leftLabel:'25 minutes', rightLabel:'15 minutes',
+    leftCorrect:false,
+    expl:'0,25 × 60 ÷ 100 = 15 minutes. Pas 25 !',
+    formula:'0,25 × 60 ÷ 100 = 15 min',
+    loi:'Calcul centièmes — conversion inverse'
+  },
+  // FINALE
+  {
+    stage:'🏆 GRANDE FINALE', matchName:'⚔️ LA FINALE',
+    q:'Un salarié travaille 7h45. Combien d\'heures en centièmes ?',ctx:'7h45 = 7 + (45×100÷60) = ?',
+    leftLabel:'7,75 h', rightLabel:'7,45 h',
+    leftCorrect:true,
+    expl:'45 min = 0,75 centième. Donc 7h45 = 7,75h en centièmes. 7,45 serait une erreur classique !',
+    formula:'7 + (45 × 100 ÷ 60) = 7 + 0,75 = 7,75h',
+    loi:'Utilisation sur les contrats et fiches de paie'
+  },
+];
+
+const TEAMS = [
+  {name:'Équipe A', icon:'🔥', score:0},
+  {name:'Équipe B', icon:'⚡', score:0},
+  {name:'Équipe C', icon:'🚀', score:0},
+  {name:'Équipe D', icon:'💪', score:0},
+];
+
+// Bracket setup: [left team idx, right team idx] per match
+// Match 0: A vs B → winner goes to final
+// Match 1: C vs D → winner goes to final
+// Match 2: final
+
+let matchOrder = [[0,1],[2,3],[null,null]]; // null = filled by winners
+let matchWinners = [];
+let currentMatch = 0;
+let tLeft=30, tInt=null, answered=false;
+let scores = {left:0, right:0};
+
+const AC=new(window.AudioContext||window.webkitAudioContext)();
+function rAC(){try{AC.resume();}catch(e){}}
+
+function beep(type){
+  rAC();
+  try{
+    if(type==='correct'){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>{const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(.12,AC.currentTime+.03);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.3);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.3);},i*80));}
+    else if(type==='wrong'){[300,220].forEach((f,i)=>setTimeout(()=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sawtooth';o.frequency.value=f;g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(.1,AC.currentTime+.02);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.22);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.22);},i*100));}
+    else if(type==='fanfare'){const mel=[523,523,523,659,784,1047,784,1047,1319];[0,100,200,300,400,500,650,800,950].forEach((t,i)=>setTimeout(()=>{const o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=mel[i];g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(.08,AC.currentTime+.02);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.25);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.25);},t));}
+    else if(type==='tick'){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=800;g.gain.setValueAtTime(.05,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.06);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.06);}
+  }catch(e){}
+}
+
+function confetti(n=60){
+  const cl=['#4ade80','#fbbf24','#60a5fa','#f472b6','#fb923c','#a78bfa'];
+  for(let i=0;i<n;i++){const el=document.createElement('div');el.className='cf';el.style.cssText=`left:${Math.random()*100}vw;background:${cl[i%cl.length]};width:${6+Math.random()*7}px;height:${5+Math.random()*6}px;border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.4+Math.random()*1.5}s;animation-delay:${Math.random()*.5}s;`;document.body.appendChild(el);setTimeout(()=>el.remove(),3500);}
+}
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+
+function startTournament(){
+  rAC();
+  currentMatch=0; matchWinners=[];
+  TEAMS.forEach(t=>t.score=0);
+  show('bracket-screen');
+  loadMatch();
+}
+
+function loadMatch(){
+  answered=false; tLeft=30;
+  clearInterval(tInt);
+
+  const q=QUESTIONS[currentMatch];
+  const [li,ri]=matchOrder[currentMatch];
+
+  // For final, use winners
+  const leftTeam = li!==null ? TEAMS[li] : TEAMS[matchWinners[0]];
+  const rightTeam = ri!==null ? TEAMS[ri] : TEAMS[matchWinners[1]];
+
+  document.getElementById('match-stage').textContent=q.stage;
+  document.getElementById('stage-name').textContent=q.matchName;
+  document.getElementById('stage-round').textContent=`Match ${currentMatch+1}/${QUESTIONS.length}`;
+  document.getElementById('tq-text').textContent=q.q;
+  document.getElementById('tq-ctx').textContent=q.ctx;
+  document.getElementById('match-timer').textContent=tLeft;
+  document.getElementById('tfb').className='tournament-feedback';
+  document.getElementById('btn-next-round').className='btn-next-round';
+
+  // Left fighter
+  document.getElementById('fi-left').textContent=leftTeam.icon;
+  document.getElementById('fl-left').textContent=leftTeam.name;
+  document.getElementById('fv-left').textContent=q.leftLabel;
+  document.getElementById('fs-left').textContent='Clique si c\'est la bonne réponse';
+  document.getElementById('fc-left').className='fighter-card';
+  document.getElementById('fc-left').disabled=false;
+
+  // Right fighter
+  document.getElementById('fi-right').textContent=rightTeam.icon;
+  document.getElementById('fl-right').textContent=rightTeam.name;
+  document.getElementById('fv-right').textContent=q.rightLabel;
+  document.getElementById('fs-right').textContent='Clique si c\'est la bonne réponse';
+  document.getElementById('fc-right').className='fighter-card';
+  document.getElementById('fc-right').disabled=false;
+
+  updateTimerProg(1);
+  tInt=setInterval(()=>{
+    tLeft-=0.1;
+    updateTimerProg(tLeft/30);
+    document.getElementById('match-timer').textContent=Math.max(0,Math.ceil(tLeft));
+    const el=document.getElementById('match-timer');
+    el.classList.toggle('urgent',tLeft<=8);
+    if(tLeft<=8&&tLeft>0) beep('tick');
+    if(tLeft<=0){clearInterval(tInt);if(!answered)timeout();}
+  },100);
+}
+
+function updateTimerProg(pct){
+  const f=document.getElementById('tpf');
+  f.style.width=`${Math.max(0,pct*100)}%`;
+  f.className='timer-prog-fill'+(pct<.25?' danger':pct<.5?' warn':'');
+}
+
+function timeout(){pickSide(null);}
+
+function pickSide(side){
+  if(answered)return;
+  answered=true; clearInterval(tInt);
+
+  const q=QUESTIONS[currentMatch];
+  const [li,ri]=matchOrder[currentMatch];
+  const leftTeam=li!==null?TEAMS[li]:TEAMS[matchWinners[0]];
+  const rightTeam=ri!==null?TEAMS[ri]:TEAMS[matchWinners[1]];
+
+  let winnerTeam, loserTeam;
+  const leftWins=q.leftCorrect;
+
+  if(side==='left'){
+    if(leftWins){winnerTeam=leftTeam;loserTeam=rightTeam;beep('correct');confetti(40);}
+    else{winnerTeam=rightTeam;loserTeam=leftTeam;beep('wrong');}
+  } else if(side==='right'){
+    if(!leftWins){winnerTeam=rightTeam;loserTeam=leftTeam;beep('correct');confetti(40);}
+    else{winnerTeam=leftTeam;loserTeam=rightTeam;beep('wrong');}
+  } else {
+    // timeout — random or right answer wins
+    winnerTeam=leftWins?leftTeam:rightTeam;
+    loserTeam=leftWins?rightTeam:leftTeam;
+    beep('wrong');
+  }
+
+  winnerTeam.score+=1000;
+  matchWinners.push(TEAMS.indexOf(winnerTeam));
+
+  // Update final bracket
+  if(currentMatch===1) matchOrder[2]=[matchWinners[0], matchWinners[1]];
+
+  document.getElementById('fc-left').disabled=true;
+  document.getElementById('fc-right').disabled=true;
+  if(leftWins){
+    document.getElementById('fc-left').classList.add('correct');
+    document.getElementById('fc-right').classList.add('wrong');
+  } else {
+    document.getElementById('fc-right').classList.add('correct');
+    document.getElementById('fc-left').classList.add('wrong');
+  }
+
+  const tfb=document.getElementById('tfb');
+  const correct=side!==null&&((side==='left'&&leftWins)||(side==='right'&&!leftWins));
+  tfb.className=`tournament-feedback show ${correct?'tf-correct':'tf-wrong'}`;
+  document.getElementById('tf-title').textContent=`🏆 ${winnerTeam.icon} ${winnerTeam.name} remporte le match !`;
+  document.getElementById('tf-body').textContent=q.expl;
+  document.getElementById('tf-formula').textContent='📐 '+q.formula;
+  document.getElementById('tf-law').textContent=q.loi;
+
+  const btn=document.getElementById('btn-next-round');
+  btn.textContent=currentMatch<QUESTIONS.length-1?'Voir le tableau →':'🏆 Voir le champion !';
+  btn.className='btn-next-round show';
+}
+
+function nextMatch(){
+  showBracketVisual();
+}
+
+function showBracketVisual(){
+  show('bracket-visual');
+  const grid=document.getElementById('bv-grid');
+  grid.innerHTML='';
+
+  // Round 1
+  const r1=document.createElement('div'); r1.className='bv-round';
+  r1.innerHTML='<div class="bv-round-label">DEMI-FINALES</div>';
+
+  [0,1].forEach(mi=>{
+    if(mi>=matchWinners.length+1) return;
+    const [li,ri]=matchOrder[mi];
+    if(li===null||ri===null) return;
+    const lTeam=TEAMS[li], rTeam=TEAMS[ri];
+    const done=mi<matchWinners.length;
+    const winIdx=done?matchWinners[mi]:null;
+    const d=document.createElement('div');
+    d.className=`bv-match ${done?'done':'current'}`;
+    d.innerHTML=`<div class="bv-player ${done&&winIdx===li?'bv-winner':'done'&&winIdx!==li?'bv-loser':''}">${lTeam.icon} ${lTeam.name}</div>
+      <div style="font-size:9px;color:#374151;text-align:center;padding:2px 0;">VS</div>
+      <div class="bv-player ${done&&winIdx===ri?'bv-winner':done&&winIdx!==ri?'bv-loser':''}">${rTeam.icon} ${rTeam.name}</div>`;
+    r1.appendChild(d);
+  });
+  grid.appendChild(r1);
+
+  // Arrow
+  const arr=document.createElement('div');
+  arr.innerHTML='<div style="font-size:24px;color:#4b5563;">▶</div>';
+  grid.appendChild(arr);
+
+  // Final
+  const r2=document.createElement('div'); r2.className='bv-round';
+  r2.innerHTML='<div class="bv-round-label">🏆 FINALE</div>';
+  if(matchWinners.length>=2){
+    const w1=TEAMS[matchWinners[0]], w2=TEAMS[matchWinners[1]];
+    const finalDone=matchWinners.length>=3;
+    const fd=document.createElement('div');
+    fd.className=`bv-match ${finalDone?'done':'current'}`;
+    const fw=finalDone?matchWinners[2]:null;
+    fd.innerHTML=`<div class="bv-player ${finalDone&&fw===matchWinners[0]?'bv-winner':finalDone?'bv-loser':''}">${w1.icon} ${w1.name}</div>
+      <div style="font-size:9px;color:#374151;text-align:center;padding:2px 0;">VS</div>
+      <div class="bv-player ${finalDone&&fw===matchWinners[1]?'bv-winner':finalDone?'bv-loser':''}">${w2.icon} ${w2.name}</div>`;
+    r2.appendChild(fd);
+  } else {
+    const fd=document.createElement('div'); fd.className='bv-match';
+    fd.innerHTML='<div class="bv-player" style="color:#374151">En attente...</div>';
+    r2.appendChild(fd);
+  }
+  grid.appendChild(r2);
+
+  const btn=document.getElementById('btn-continue-bracket');
+  if(currentMatch>=QUESTIONS.length-1){
+    btn.textContent='🏆 Voir le Champion !';
+    btn.onclick=showChampion;
+  } else {
+    currentMatch++;
+    btn.textContent=`⚔️ Match ${currentMatch+1} — ${QUESTIONS[currentMatch].stage}`;
+    btn.onclick=()=>{show('bracket-screen');loadMatch();};
+  }
+}
+
+function continueFromBracket(){} // handled dynamically above
+
+function showChampion(){
+  const champIdx=matchWinners[matchWinners.length-1];
+  const champ=TEAMS[champIdx];
+  beep('fanfare'); confetti(100);
+  document.getElementById('champ-name').textContent=champ.icon+' '+champ.name;
+  document.getElementById('champ-score').textContent=champ.score;
+  show('champion');
+}
+
+function restart(){
+  currentMatch=0; matchWinners=[]; TEAMS.forEach(t=>t.score=0);
+  show('intro');
+}
+</script>
+
+
+</body></html>

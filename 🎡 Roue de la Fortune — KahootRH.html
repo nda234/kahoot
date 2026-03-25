@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)file:///C:/Users/0189334/Downloads/roue_fortune%20(3).html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🎡 Roue de la Fortune — KahootRH</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Montserrat',Arial,sans-serif;background:#0f0c29;min-height:100vh;overflow-x:hidden;display:flex;flex-direction:column;align-items:center;}
+
+/* BG animated */
+.bg{position:fixed;inset:0;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);z-index:0;}
+.star{position:fixed;border-radius:50%;background:#fff;animation:twinkle linear infinite;z-index:0;}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(1);}50%{opacity:1;transform:scale(1.4);}}
+
+/* LAYOUT */
+.app{position:relative;z-index:1;width:100%;max-width:900px;padding:1rem;display:flex;flex-direction:column;align-items:center;}
+
+/* HEADER */
+.header{text-align:center;margin-bottom:1.5rem;}
+.header h1{font-size:32px;font-weight:900;color:#fff;letter-spacing:-1px;}
+.header h1 span{color:#fbbf24;}
+.header p{font-size:13px;color:#94a3b8;margin-top:.3rem;}
+
+/* MAIN LAYOUT */
+.main{display:flex;gap:2rem;align-items:flex-start;width:100%;flex-wrap:wrap;justify-content:center;}
+
+/* WHEEL SECTION */
+.wheel-section{display:flex;flex-direction:column;align-items:center;gap:1rem;}
+.wheel-wrap{position:relative;width:360px;height:360px;}
+.wheel-pointer{position:absolute;top:-18px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:36px solid #fbbf24;z-index:10;filter:drop-shadow(0 4px 8px rgba(251,191,36,.6));}
+.wheel-pointer::after{content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:#fbbf24;}
+canvas#wheel{border-radius:50%;box-shadow:0 0 60px rgba(251,191,36,.3), 0 0 120px rgba(251,191,36,.1);transition:transform .05s;}
+.wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1e293b,#0f172a);border:4px solid #fbbf24;display:flex;align-items:center;justify-content:center;font-size:22px;z-index:5;box-shadow:0 0 20px rgba(251,191,36,.4);}
+.btn-spin{background:linear-gradient(135deg,#fbbf24,#d97706);color:#000;border:none;border-radius:50px;padding:16px 48px;font-size:18px;font-weight:900;cursor:pointer;box-shadow:0 6px 30px rgba(251,191,36,.5);transition:transform .15s,box-shadow .15s;letter-spacing:.5px;}
+.btn-spin:hover{transform:translateY(-3px);box-shadow:0 10px 40px rgba(251,191,36,.6);}
+.btn-spin:active{transform:scale(.96);}
+.btn-spin:disabled{background:#334155;color:#64748b;cursor:not-allowed;box-shadow:none;transform:none;}
+
+/* RESULT */
+.result-box{background:rgba(251,191,36,.1);border:2px solid #fbbf24;border-radius:16px;padding:1rem 1.5rem;text-align:center;min-width:200px;display:none;}
+.result-box.show{display:block;animation:resultPop .5s cubic-bezier(.4,2,.6,1);}
+@keyframes resultPop{from{transform:scale(.5);opacity:0;}to{transform:scale(1);opacity:1;}}
+.result-label{font-size:11px;color:#fbbf24;font-weight:700;letter-spacing:.08em;margin-bottom:.3rem;}
+.result-name{font-size:24px;font-weight:900;color:#fff;}
+
+/* PANEL */
+.panel{flex:1;min-width:280px;max-width:340px;display:flex;flex-direction:column;gap:12px;}
+
+/* PLAYERS LIST */
+.players-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:1.2rem;}
+.card-title{font-size:12px;font-weight:700;color:#94a3b8;letter-spacing:.08em;margin-bottom:.8rem;}
+.player-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;margin-bottom:.8rem;}
+.player-item{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.06);border-radius:10px;padding:.5rem .8rem;}
+.player-item.eliminated{opacity:.3;text-decoration:line-through;}
+.player-item.winner{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.4);}
+.player-name{font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;}
+.player-av{font-size:18px;}
+.btn-remove{background:none;border:none;color:#475569;cursor:pointer;font-size:14px;padding:2px 6px;border-radius:6px;transition:color .15s;}
+.btn-remove:hover{color:#f87171;}
+.add-row{display:flex;gap:8px;}
+.add-input{flex:1;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;padding:8px 12px;font-size:13px;color:#fff;font-family:'Montserrat',Arial,sans-serif;outline:none;transition:border-color .2s;}
+.add-input:focus{border-color:#fbbf24;}
+.add-input::placeholder{color:rgba(255,255,255,.3);}
+.btn-add{background:#fbbf24;color:#000;border:none;border-radius:10px;padding:8px 14px;font-size:16px;font-weight:900;cursor:pointer;transition:background .15s;}
+.btn-add:hover{background:#d97706;}
+
+/* SETTINGS */
+.settings-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:1.2rem;}
+.setting-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;}
+.setting-label{font-size:12px;color:#94a3b8;}
+.toggle{width:36px;height:20px;background:#334155;border-radius:10px;position:relative;cursor:pointer;transition:background .2s;}
+.toggle.on{background:#fbbf24;}
+.toggle-thumb{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s;}
+.toggle.on .toggle-thumb{left:18px;}
+
+/* HISTORY */
+.history-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:1.2rem;}
+.history-list{display:flex;flex-direction:column;gap:5px;max-height:140px;overflow-y:auto;}
+.history-item{display:flex;align-items:center;gap:8px;font-size:12px;color:#94a3b8;padding:.3rem .5rem;border-radius:8px;background:rgba(255,255,255,.03);}
+.history-item .spin-num{color:#fbbf24;font-weight:700;min-width:20px;}
+.history-item .spin-name{color:#e2e8f0;font-weight:600;}
+
+/* CONFETTI */
+.cf{position:fixed;top:-20px;animation:cfall linear forwards;pointer-events:none;z-index:9999;}
+@keyframes cfall{to{transform:translateY(110vh) rotate(540deg);opacity:0;}}
+
+/* WINNER OVERLAY */
+.winner-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9990;opacity:0;pointer-events:none;transition:opacity .3s;}
+.winner-ov.show{opacity:1;pointer-events:all;}
+.winner-av{font-size:80px;animation:bounce 1s ease-in-out infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+.winner-crown{font-size:48px;margin-bottom:.5rem;}
+.winner-title{font-size:16px;font-weight:700;color:#fbbf24;letter-spacing:.1em;margin-bottom:.5rem;}
+.winner-name-big{font-size:48px;font-weight:900;color:#fff;margin-bottom:1rem;text-shadow:0 0 40px #fbbf24;}
+.winner-sub{font-size:14px;color:#94a3b8;margin-bottom:2rem;}
+.btn-close-winner{background:linear-gradient(135deg,#fbbf24,#d97706);color:#000;border:none;border-radius:50px;padding:14px 40px;font-size:16px;font-weight:900;cursor:pointer;}
+
+/* MOBILE */
+@media(max-width:600px){
+  .wheel-wrap{width:280px;height:280px;}
+  canvas#wheel{width:280px;height:280px;}
+  .header h1{font-size:24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg" id="bg"><div class="star" style="width: 3.40865px; height: 3.40865px; top: 29.8983vh; left: 81.1445vw; animation-duration: 4.86088s; animation-delay: 1.3148s;"></div><div class="star" style="width: 2.99506px; height: 2.99506px; top: 11.4045vh; left: 66.4735vw; animation-duration: 5.6877s; animation-delay: 0.0705806s;"></div><div class="star" style="width: 1.75047px; height: 1.75047px; top: 97.7168vh; left: 76.0864vw; animation-duration: 4.85783s; animation-delay: 0.585982s;"></div><div class="star" style="width: 1.50093px; height: 1.50093px; top: 71.4965vh; left: 52.5453vw; animation-duration: 5.80514s; animation-delay: 0.470909s;"></div><div class="star" style="width: 1.38121px; height: 1.38121px; top: 89.2637vh; left: 80.2797vw; animation-duration: 3.15359s; animation-delay: 2.22162s;"></div><div class="star" style="width: 3.62206px; height: 3.62206px; top: 12.8763vh; left: 95.2678vw; animation-duration: 5.81191s; animation-delay: 3.6083s;"></div><div class="star" style="width: 3.85344px; height: 3.85344px; top: 65.3781vh; left: 30.4061vw; animation-duration: 2.42131s; animation-delay: 0.979024s;"></div><div class="star" style="width: 1.69845px; height: 1.69845px; top: 19.6888vh; left: 9.45619vw; animation-duration: 5.82166s; animation-delay: 1.78304s;"></div><div class="star" style="width: 1.18305px; height: 1.18305px; top: 83.4978vh; left: 47.0831vw; animation-duration: 5.70373s; animation-delay: 0.176599s;"></div><div class="star" style="width: 2.06167px; height: 2.06167px; top: 77.312vh; left: 94.9104vw; animation-duration: 2.47659s; animation-delay: 2.73794s;"></div><div class="star" style="width: 1.95144px; height: 1.95144px; top: 74.4061vh; left: 84.7975vw; animation-duration: 3.20908s; animation-delay: 2.43743s;"></div><div class="star" style="width: 2.35642px; height: 2.35642px; top: 49.1752vh; left: 62.9832vw; animation-duration: 3.31322s; animation-delay: 2.24778s;"></div><div class="star" style="width: 3.90928px; height: 3.90928px; top: 10.2034vh; left: 44.5967vw; animation-duration: 4.20862s; animation-delay: 1.95392s;"></div><div class="star" style="width: 1.39893px; height: 1.39893px; top: 32.8983vh; left: 18.3924vw; animation-duration: 3.96296s; animation-delay: 1.4152s;"></div><div class="star" style="width: 1.80611px; height: 1.80611px; top: 74.2336vh; left: 68.1776vw; animation-duration: 4.40091s; animation-delay: 3.67287s;"></div><div class="star" style="width: 1.90469px; height: 1.90469px; top: 58.5366vh; left: 73.926vw; animation-duration: 2.1013s; animation-delay: 2.19353s;"></div><div class="star" style="width: 1.81551px; height: 1.81551px; top: 80.4534vh; left: 17.8869vw; animation-duration: 3.54864s; animation-delay: 3.87388s;"></div><div class="star" style="width: 2.84639px; height: 2.84639px; top: 30.0993vh; left: 52.8499vw; animation-duration: 4.72126s; animation-delay: 3.69867s;"></div><div class="star" style="width: 2.96638px; height: 2.96638px; top: 96.4158vh; left: 8.6188vw; animation-duration: 4.89214s; animation-delay: 2.66793s;"></div><div class="star" style="width: 3.92353px; height: 3.92353px; top: 83.7782vh; left: 97.6825vw; animation-duration: 2.04138s; animation-delay: 0.623821s;"></div><div class="star" style="width: 3.93035px; height: 3.93035px; top: 55.2448vh; left: 23.205vw; animation-duration: 3.22891s; animation-delay: 3.69372s;"></div><div class="star" style="width: 3.87123px; height: 3.87123px; top: 8.0603vh; left: 52.204vw; animation-duration: 4.69247s; animation-delay: 2.63429s;"></div><div class="star" style="width: 2.91503px; height: 2.91503px; top: 59.9969vh; left: 36.6235vw; animation-duration: 5.97214s; animation-delay: 2.39169s;"></div><div class="star" style="width: 2.26531px; height: 2.26531px; top: 23.9077vh; left: 10.7281vw; animation-duration: 5.61583s; animation-delay: 0.849355s;"></div><div class="star" style="width: 2.28801px; height: 2.28801px; top: 48.4803vh; left: 23.6237vw; animation-duration: 2.19669s; animation-delay: 0.711014s;"></div><div class="star" style="width: 2.43287px; height: 2.43287px; top: 72.9848vh; left: 91.4104vw; animation-duration: 4.04719s; animation-delay: 0.270706s;"></div><div class="star" style="width: 1.21214px; height: 1.21214px; top: 2.61123vh; left: 28.1629vw; animation-duration: 4.92771s; animation-delay: 3.11384s;"></div><div class="star" style="width: 3.23266px; height: 3.23266px; top: 15.6189vh; left: 72.1942vw; animation-duration: 5.93538s; animation-delay: 2.42975s;"></div><div class="star" style="width: 1.75805px; height: 1.75805px; top: 17.6983vh; left: 58.8992vw; animation-duration: 2.22477s; animation-delay: 2.98213s;"></div><div class="star" style="width: 2.07261px; height: 2.07261px; top: 28.4031vh; left: 33.5631vw; animation-duration: 2.05939s; animation-delay: 0.8489s;"></div><div class="star" style="width: 2.83275px; height: 2.83275px; top: 36.3035vh; left: 9.59407vw; animation-duration: 2.30856s; animation-delay: 0.150076s;"></div><div class="star" style="width: 1.15721px; height: 1.15721px; top: 61.194vh; left: 83.3947vw; animation-duration: 5.05786s; animation-delay: 3.01316s;"></div><div class="star" style="width: 3.04444px; height: 3.04444px; top: 30.3634vh; left: 84.8109vw; animation-duration: 2.38643s; animation-delay: 0.93335s;"></div><div class="star" style="width: 3.2021px; height: 3.2021px; top: 24.4822vh; left: 31.2677vw; animation-duration: 3.91681s; animation-delay: 1.58099s;"></div><div class="star" style="width: 2.08644px; height: 2.08644px; top: 70.1578vh; left: 57.3142vw; animation-duration: 2.21006s; animation-delay: 3.01186s;"></div><div class="star" style="width: 3.89064px; height: 3.89064px; top: 82.9454vh; left: 59.0422vw; animation-duration: 2.16907s; animation-delay: 3.99836s;"></div><div class="star" style="width: 3.15116px; height: 3.15116px; top: 86.6031vh; left: 12.7062vw; animation-duration: 4.41344s; animation-delay: 2.7322s;"></div><div class="star" style="width: 1.52161px; height: 1.52161px; top: 46.445vh; left: 49.4086vw; animation-duration: 4.47178s; animation-delay: 3.82573s;"></div><div class="star" style="width: 1.28518px; height: 1.28518px; top: 79.2883vh; left: 76.916vw; animation-duration: 3.18492s; animation-delay: 3.21278s;"></div><div class="star" style="width: 1.80651px; height: 1.80651px; top: 98.2984vh; left: 35.4562vw; animation-duration: 2.09454s; animation-delay: 1.72665s;"></div><div class="star" style="width: 3.47523px; height: 3.47523px; top: 2.25846vh; left: 27.7419vw; animation-duration: 2.94392s; animation-delay: 0.701965s;"></div><div class="star" style="width: 1.51806px; height: 1.51806px; top: 10.9111vh; left: 19.9337vw; animation-duration: 5.21313s; animation-delay: 2.15443s;"></div><div class="star" style="width: 1.51232px; height: 1.51232px; top: 83.869vh; left: 74.4806vw; animation-duration: 2.03988s; animation-delay: 3.2442s;"></div><div class="star" style="width: 3.08343px; height: 3.08343px; top: 49.6358vh; left: 13.2414vw; animation-duration: 2.15847s; animation-delay: 2.80214s;"></div><div class="star" style="width: 1.62751px; height: 1.62751px; top: 9.65126vh; left: 39.0411vw; animation-duration: 5.7342s; animation-delay: 1.27845s;"></div><div class="star" style="width: 1.89867px; height: 1.89867px; top: 46.5717vh; left: 91.6248vw; animation-duration: 5.42378s; animation-delay: 3.16674s;"></div><div class="star" style="width: 1.44079px; height: 1.44079px; top: 51.7636vh; left: 10.7752vw; animation-duration: 4.76202s; animation-delay: 3.29562s;"></div><div class="star" style="width: 2.61307px; height: 2.61307px; top: 26.1927vh; left: 28.2945vw; animation-duration: 2.02005s; animation-delay: 3.28123s;"></div><div class="star" style="width: 1.65839px; height: 1.65839px; top: 52.0585vh; left: 16.9406vw; animation-duration: 5.34939s; animation-delay: 2.28546s;"></div><div class="star" style="width: 2.98799px; height: 2.98799px; top: 52.5789vh; left: 29.3956vw; animation-duration: 5.16494s; animation-delay: 3.82902s;"></div><div class="star" style="width: 2.50943px; height: 2.50943px; top: 58.1193vh; left: 2.14673vw; animation-duration: 3.81905s; animation-delay: 1.57042s;"></div><div class="star" style="width: 2.80363px; height: 2.80363px; top: 89.1032vh; left: 56.972vw; animation-duration: 3.00022s; animation-delay: 3.8255s;"></div><div class="star" style="width: 2.04393px; height: 2.04393px; top: 95.5307vh; left: 4.12234vw; animation-duration: 2.88278s; animation-delay: 3.32424s;"></div><div class="star" style="width: 2.88897px; height: 2.88897px; top: 15.7868vh; left: 71.8292vw; animation-duration: 5.50467s; animation-delay: 1.79699s;"></div><div class="star" style="width: 2.81038px; height: 2.81038px; top: 24.0115vh; left: 9.6267vw; animation-duration: 5.94076s; animation-delay: 3.70293s;"></div><div class="star" style="width: 1.3852px; height: 1.3852px; top: 73.1544vh; left: 2.46599vw; animation-duration: 3.30649s; animation-delay: 1.49155s;"></div><div class="star" style="width: 1.17362px; height: 1.17362px; top: 65.4133vh; left: 89.6408vw; animation-duration: 3.31754s; animation-delay: 0.0184415s;"></div><div class="star" style="width: 1.62937px; height: 1.62937px; top: 41.6953vh; left: 1.86136vw; animation-duration: 4.22063s; animation-delay: 3.80225s;"></div><div class="star" style="width: 1.19871px; height: 1.19871px; top: 80.9199vh; left: 34.6955vw; animation-duration: 5.4074s; animation-delay: 1.76135s;"></div><div class="star" style="width: 3.91352px; height: 3.91352px; top: 5.73565vh; left: 22.5591vw; animation-duration: 3.11967s; animation-delay: 2.80876s;"></div><div class="star" style="width: 3.21463px; height: 3.21463px; top: 82.403vh; left: 68.7241vw; animation-duration: 3.88493s; animation-delay: 2.57559s;"></div><div class="star" style="width: 2.9969px; height: 2.9969px; top: 34.7214vh; left: 63.1815vw; animation-duration: 2.18889s; animation-delay: 1.1794s;"></div><div class="star" style="width: 1.06876px; height: 1.06876px; top: 1.25267vh; left: 15.2886vw; animation-duration: 3.01177s; animation-delay: 1.83434s;"></div><div class="star" style="width: 3.67374px; height: 3.67374px; top: 82.1359vh; left: 32.3096vw; animation-duration: 4.24591s; animation-delay: 1.4262s;"></div><div class="star" style="width: 2.85857px; height: 2.85857px; top: 62.3082vh; left: 21.5082vw; animation-duration: 4.1244s; animation-delay: 2.22359s;"></div><div class="star" style="width: 1.65579px; height: 1.65579px; top: 0.606176vh; left: 50.3913vw; animation-duration: 4.39796s; animation-delay: 3.39215s;"></div><div class="star" style="width: 1.7438px; height: 1.7438px; top: 33.8469vh; left: 55.282vw; animation-duration: 5.07049s; animation-delay: 3.52226s;"></div><div class="star" style="width: 2.1801px; height: 2.1801px; top: 84.5998vh; left: 55.4003vw; animation-duration: 3.17883s; animation-delay: 0.621748s;"></div><div class="star" style="width: 1.46308px; height: 1.46308px; top: 39.0672vh; left: 52.3942vw; animation-duration: 4.75127s; animation-delay: 3.59263s;"></div><div class="star" style="width: 1.6589px; height: 1.6589px; top: 29.4539vh; left: 90.2663vw; animation-duration: 3.31899s; animation-delay: 0.619529s;"></div><div class="star" style="width: 1.7885px; height: 1.7885px; top: 65.836vh; left: 83.182vw; animation-duration: 4.60192s; animation-delay: 1.83683s;"></div><div class="star" style="width: 3.19577px; height: 3.19577px; top: 70.8538vh; left: 80.2535vw; animation-duration: 5.72795s; animation-delay: 3.99386s;"></div><div class="star" style="width: 2.43571px; height: 2.43571px; top: 64.3979vh; left: 90.0096vw; animation-duration: 3.88403s; animation-delay: 3.40037s;"></div><div class="star" style="width: 1.62877px; height: 1.62877px; top: 10.5825vh; left: 46.6693vw; animation-duration: 5.04606s; animation-delay: 2.81223s;"></div><div class="star" style="width: 1.80816px; height: 1.80816px; top: 95.4692vh; left: 12.624vw; animation-duration: 5.1689s; animation-delay: 3.90444s;"></div><div class="star" style="width: 2.38799px; height: 2.38799px; top: 17.2386vh; left: 28.4147vw; animation-duration: 3.82049s; animation-delay: 3.99402s;"></div><div class="star" style="width: 2.29712px; height: 2.29712px; top: 81.6842vh; left: 30.9678vw; animation-duration: 4.90858s; animation-delay: 1.96323s;"></div><div class="star" style="width: 3.19882px; height: 3.19882px; top: 89.4901vh; left: 38.5901vw; animation-duration: 3.34029s; animation-delay: 1.566s;"></div><div class="star" style="width: 1.01491px; height: 1.01491px; top: 42.4276vh; left: 39.1982vw; animation-duration: 3.65341s; animation-delay: 3.53276s;"></div><div class="star" style="width: 1.14978px; height: 1.14978px; top: 47.6926vh; left: 13.0122vw; animation-duration: 2.7396s; animation-delay: 3.09486s;"></div></div>
+
+<!-- Winner overlay -->
+<div class="winner-ov" id="winner-ov">
+  <div class="winner-crown">👑</div>
+  <div class="winner-av" id="w-av">🎯</div>
+  <div class="winner-title">C'EST TOI !</div>
+  <div class="winner-name-big" id="w-name">Joueur</div>
+  <div class="winner-sub" id="w-sub">Tu es sélectionné(e) !</div>
+  <button class="btn-close-winner" onclick="closeWinner()">OK, c'est noté ! 🎉</button>
+</div>
+
+<div class="app">
+  <div class="header">
+    <h1>🎡 Roue de la <span>Fortune</span></h1>
+    <p>Administration du Personnel · Qui répond en premier ?</p>
+  </div>
+
+  <div class="main">
+
+    <!-- WHEEL -->
+    <div class="wheel-section">
+      <div class="wheel-wrap">
+        <div class="wheel-pointer"></div>
+        <canvas id="wheel" width="360" height="360"></canvas>
+        <div class="wheel-center">🎯</div>
+      </div>
+      <button class="btn-spin" id="btn-spin" onclick="spinWheel()">🎡 TOURNER !</button>
+      <div class="result-box" id="result-box">
+        <div class="result-label">🎯 SÉLECTIONNÉ</div>
+        <div class="result-name" id="result-name">—</div>
+      </div>
+    </div>
+
+    <!-- PANEL -->
+    <div class="panel">
+
+      <!-- Players -->
+      <div class="players-card">
+        <div class="card-title">👥 PARTICIPANTS (6)</div>
+        <div class="player-list" id="player-list"><div class="player-item"><div class="player-name"><span class="player-av">🔥</span>Équipe 1</div>
+        <button class="btn-remove" onclick="removePlayer(0)">✕</button></div><div class="player-item"><div class="player-name"><span class="player-av">⚡</span>Équipe 2</div>
+        <button class="btn-remove" onclick="removePlayer(1)">✕</button></div><div class="player-item"><div class="player-name"><span class="player-av">🚀</span>Équipe 3</div>
+        <button class="btn-remove" onclick="removePlayer(2)">✕</button></div><div class="player-item"><div class="player-name"><span class="player-av">🏆</span>Équipe 4</div>
+        <button class="btn-remove" onclick="removePlayer(3)">✕</button></div><div class="player-item"><div class="player-name"><span class="player-av">💪</span>Équipe 5</div>
+        <button class="btn-remove" onclick="removePlayer(4)">✕</button></div><div class="player-item"><div class="player-name"><span class="player-av">🎯</span>Équipe 6</div>
+        <button class="btn-remove" onclick="removePlayer(5)">✕</button></div></div>
+        <div class="add-row">
+          <input class="add-input" id="add-input" placeholder="Ajouter un participant..." maxlength="20" onkeydown="if(event.key===&#39;Enter&#39;)addPlayer()">
+          <button class="btn-add" onclick="addPlayer()">+</button>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="settings-card">
+        <div class="card-title">⚙️ OPTIONS</div>
+        <div class="setting-row">
+          <span class="setting-label">Retirer après sélection</span>
+          <div class="toggle" id="tog-remove" onclick="toggleOpt(&#39;remove&#39;)">
+            <div class="toggle-thumb"></div>
+          </div>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">Confettis</span>
+          <div class="toggle on" id="tog-confetti" onclick="toggleOpt(&#39;confetti&#39;)">
+            <div class="toggle-thumb"></div>
+          </div>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">Overlay gagnant</span>
+          <div class="toggle on" id="tog-overlay" onclick="toggleOpt(&#39;overlay&#39;)">
+            <div class="toggle-thumb"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div class="history-card">
+        <div class="card-title">📋 HISTORIQUE</div>
+        <div class="history-list" id="history-list"><div style="font-size:12px;color:#475569;text-align:center;padding:.5rem;">Aucun tour encore joué</div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STARS BG ──────────────────────────────────────────────
+const bg = document.getElementById('bg');
+for(let i=0;i<80;i++){
+  const s=document.createElement('div'); s.className='star';
+  const sz=1+Math.random()*3;
+  s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}vh;left:${Math.random()*100}vw;animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s;`;
+  bg.appendChild(s);
+}
+
+// ── COLORS ────────────────────────────────────────────────
+const COLORS = [
+  '#e63946','#2a9d8f','#f4a261','#8338ec','#06d6a0',
+  '#ef476f','#118ab2','#ffd166','#7209b7','#4cc9f0',
+  '#fb5607','#3a86ff','#ff006e','#8ac926','#6a4c93'
+];
+
+const AVATARS = ['😎','🤩','🦊','🐯','🦁','🐺','🦄','🐸','🦋','⚡','🎯','🏆','🔥','💪','🚀'];
+
+// ── STATE ─────────────────────────────────────────────────
+let players = [
+  {name:'Équipe 1', av:'🔥'},{name:'Équipe 2', av:'⚡'},
+  {name:'Équipe 3', av:'🚀'},{name:'Équipe 4', av:'🏆'},
+  {name:'Équipe 5', av:'💪'},{name:'Équipe 6', av:'🎯'},
+];
+let spinCount = 0;
+let history = [];
+let isSpinning = false;
+let opts = { remove:false, confetti:true, overlay:true };
+let currentAngle = 0;
+
+// ── AUDIO ─────────────────────────────────────────────────
+const AC = new(window.AudioContext||window.webkitAudioContext)();
+function rAC(){try{AC.resume();}catch(e){}}
+
+function tickSound(){
+  rAC();
+  try{
+    const o=AC.createOscillator(),g=AC.createGain();
+    o.type='triangle'; o.frequency.value=600+Math.random()*400;
+    g.gain.setValueAtTime(.08,AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.04);
+    o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.04);
+  }catch(e){}
+}
+
+function winSound(){
+  rAC();
+  try{
+    const melody=[523,659,784,1047,1319];
+    const times=[0,120,240,360,480];
+    melody.forEach((f,i)=>setTimeout(()=>{
+      const o=AC.createOscillator(),g=AC.createGain();
+      o.frequency.value=f; o.type='triangle';
+      g.gain.setValueAtTime(0,AC.currentTime);
+      g.gain.linearRampToValueAtTime(.15,AC.currentTime+.03);
+      g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.4);
+      o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.4);
+    },times[i]));
+  }catch(e){}
+}
+
+function spinSound(speed){
+  rAC();
+  try{
+    const o=AC.createOscillator(),g=AC.createGain();
+    o.type='sawtooth';
+    o.frequency.setValueAtTime(200*speed,AC.currentTime);
+    o.frequency.exponentialRampToValueAtTime(50,AC.currentTime+.1);
+    g.gain.setValueAtTime(.06,AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.1);
+    o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.1);
+  }catch(e){}
+}
+
+// ── CONFETTI ──────────────────────────────────────────────
+function launchConfetti(n=60){
+  const cl=['#fbbf24','#f472b6','#60a5fa','#4ade80','#fb923c','#a78bfa','#fff'];
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div'); el.className='cf';
+    el.style.cssText=`left:${Math.random()*100}vw;background:${cl[i%cl.length]};
+      width:${7+Math.random()*8}px;height:${6+Math.random()*7}px;
+      border-radius:${Math.random()>.5?'50%':'2px'};
+      animation-duration:${1.5+Math.random()*1.5}s;animation-delay:${Math.random()*.5}s;`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),3500);
+  }
+}
+
+// ── DRAW WHEEL ────────────────────────────────────────────
+function drawWheel(angle=0){
+  const canvas=document.getElementById('wheel');
+  const ctx=canvas.getContext('2d');
+  const cx=canvas.width/2, cy=canvas.height/2, r=canvas.width/2-4;
+  const n=players.length;
+  if(n===0){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#1e293b';
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#94a3b8'; ctx.font='bold 16px Montserrat,Arial';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('Ajoutez des participants',cx,cy);
+    return;
+  }
+  const slice=2*Math.PI/n;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Shadow ring
+  ctx.save();
+  ctx.shadowColor='rgba(251,191,36,.4)'; ctx.shadowBlur=20;
+  ctx.strokeStyle='#fbbf24'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+  ctx.restore();
+
+  players.forEach((p,i)=>{
+    const start=angle+i*slice-Math.PI/2;
+    const end=start+slice;
+    const color=COLORS[i%COLORS.length];
+
+    // Slice
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,start,end);
+    ctx.closePath();
+    ctx.fillStyle=color;
+    ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,.2)';
+    ctx.lineWidth=1.5;
+    ctx.stroke();
+
+    // Text
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(start+slice/2);
+    ctx.textAlign='right';
+    ctx.fillStyle='#fff';
+    ctx.font=`bold ${n>8?12:14}px Montserrat,Arial`;
+    ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=4;
+    const maxLen=n>8?10:14;
+    const label=p.name.length>maxLen?p.name.slice(0,maxLen-1)+'…':p.name;
+    ctx.fillText(label, r-14, 5);
+    ctx.restore();
+  });
+
+  // Center circle
+  ctx.beginPath();
+  ctx.arc(cx,cy,30,0,Math.PI*2);
+  ctx.fillStyle='#1e293b'; ctx.fill();
+  ctx.strokeStyle='#fbbf24'; ctx.lineWidth=3; ctx.stroke();
+}
+
+// ── SPIN ──────────────────────────────────────────────────
+function spinWheel(){
+  if(isSpinning || players.length<2) return;
+  rAC();
+  isSpinning=true;
+  document.getElementById('btn-spin').disabled=true;
+  document.getElementById('result-box').classList.remove('show');
+
+  const totalSpins = 5+Math.random()*8; // 5-13 full rotations
+  const extraAngle = Math.random()*Math.PI*2;
+  const targetAngle = currentAngle + totalSpins*Math.PI*2 + extraAngle;
+  const duration = 4000+Math.random()*2000;
+  const startTime = performance.now();
+  const startAngle = currentAngle;
+
+  let lastTickAngle=0;
+  const sliceAngle=2*Math.PI/players.length;
+
+  function animate(now){
+    const elapsed=now-startTime;
+    const progress=Math.min(elapsed/duration,1);
+    // Ease out cubic
+    const eased=1-Math.pow(1-progress,4);
+    currentAngle=startAngle+(targetAngle-startAngle)*eased;
+    drawWheel(currentAngle);
+
+    // Tick sound on each segment cross
+    const normalizedAngle=((currentAngle%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
+    const tickAngle=Math.floor(normalizedAngle/sliceAngle);
+    if(tickAngle!==lastTickAngle){
+      lastTickAngle=tickAngle;
+      const speed=1-progress;
+      if(speed>0.1) spinSound(speed*3);
+      else tickSound();
+    }
+
+    if(progress<1){
+      requestAnimationFrame(animate);
+    } else {
+      currentAngle=targetAngle;
+      drawWheel(currentAngle);
+      finishSpin();
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
+function finishSpin(){
+  // Find which slice is at the top (pointer)
+  const n=players.length;
+  const sliceAngle=2*Math.PI/n;
+  // Normalize angle — pointer is at top (12 o'clock = -π/2)
+  const normalized=((-(currentAngle-Math.PI/2))%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
+  const idx=Math.floor(normalized/sliceAngle)%n;
+  const winner=players[idx];
+
+  spinCount++;
+  history.unshift({num:spinCount, name:winner.name, av:winner.av});
+  renderHistory();
+
+  // Show result
+  document.getElementById('result-name').textContent=winner.av+' '+winner.name;
+  document.getElementById('result-box').classList.add('show');
+
+  winSound();
+  if(opts.confetti) launchConfetti(80);
+
+  if(opts.overlay){
+    document.getElementById('w-av').textContent=winner.av;
+    document.getElementById('w-name').textContent=winner.name;
+    document.getElementById('w-sub').textContent=`Tour n°${spinCount} — C'est ton moment !`;
+    setTimeout(()=>document.getElementById('winner-ov').classList.add('show'),600);
+  }
+
+  if(opts.remove){
+    players.splice(idx,1);
+    renderPlayers();
+  }
+
+  setTimeout(()=>{
+    isSpinning=false;
+    document.getElementById('btn-spin').disabled=players.length<2;
+    if(players.length<2) document.getElementById('btn-spin').textContent='Plus assez de participants';
+  },opts.overlay?100:800);
+}
+
+function closeWinner(){
+  document.getElementById('winner-ov').classList.remove('show');
+}
+
+// ── PLAYERS ───────────────────────────────────────────────
+function renderPlayers(){
+  const list=document.getElementById('player-list');
+  list.innerHTML='';
+  if(players.length===0){
+    list.innerHTML='<div style="font-size:12px;color:#475569;text-align:center;padding:.5rem;">Aucun participant</div>';
+    document.getElementById('btn-spin').disabled=true;
+    document.getElementById('btn-spin').textContent='🎡 TOURNER !';
+  } else {
+    players.forEach((p,i)=>{
+      const d=document.createElement('div'); d.className='player-item';
+      d.innerHTML=`<div class="player-name"><span class="player-av">${p.av}</span>${p.name}</div>
+        <button class="btn-remove" onclick="removePlayer(${i})">✕</button>`;
+      list.appendChild(d);
+    });
+    document.getElementById('btn-spin').disabled=players.length<2||isSpinning;
+    if(players.length>=2) document.getElementById('btn-spin').textContent='🎡 TOURNER !';
+  }
+  // Update title
+  document.querySelector('.players-card .card-title').textContent=`👥 PARTICIPANTS (${players.length})`;
+  drawWheel(currentAngle);
+}
+
+function addPlayer(){
+  const input=document.getElementById('add-input');
+  const name=input.value.trim();
+  if(!name) return;
+  const av=AVATARS[players.length%AVATARS.length];
+  players.push({name,av});
+  input.value='';
+  renderPlayers();
+}
+
+function removePlayer(i){
+  players.splice(i,1);
+  renderPlayers();
+}
+
+// ── HISTORY ───────────────────────────────────────────────
+function renderHistory(){
+  const list=document.getElementById('history-list');
+  list.innerHTML='';
+  if(history.length===0){
+    list.innerHTML='<div style="font-size:12px;color:#475569;text-align:center;padding:.5rem;">Aucun tour encore joué</div>';
+    return;
+  }
+  history.forEach(h=>{
+    const d=document.createElement('div'); d.className='history-item';
+    d.innerHTML=`<span class="spin-num">#${h.num}</span><span>${h.av}</span><span class="spin-name">${h.name}</span>`;
+    list.appendChild(d);
+  });
+}
+
+// ── OPTIONS ───────────────────────────────────────────────
+function toggleOpt(key){
+  opts[key]=!opts[key];
+  const el=document.getElementById('tog-'+key);
+  el.classList.toggle('on',opts[key]);
+}
+
+// ── INIT ──────────────────────────────────────────────────
+renderPlayers();
+renderHistory();
+drawWheel(0);
+</script>
+
+
+</body></html>

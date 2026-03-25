@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)file:///C:/Users/0189334/Downloads/menu_formation%20(1).html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🎯 Formation RH — Admin Personnel</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Montserrat',Arial,sans-serif;background:#0a0a1a;min-height:100vh;overflow-x:hidden;}
+
+/* BG Stars */
+.bg{position:fixed;inset:0;z-index:0;}
+.star{position:fixed;border-radius:50%;background:#fff;animation:twinkle linear infinite;}
+@keyframes twinkle{0%,100%{opacity:.15;}50%{opacity:.8;}}
+
+/* MAIN */
+.app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:2rem 1rem;}
+
+/* HEADER */
+.header{text-align:center;margin-bottom:2.5rem;}
+.header-badge{display:inline-block;background:rgba(70,232,145,.15);border:1px solid rgba(70,232,145,.3);border-radius:20px;padding:4px 16px;font-size:11px;font-weight:700;color:#46e891;letter-spacing:.05em;margin-bottom:1rem;}
+.header h1{font-size:36px;font-weight:900;color:#fff;margin-bottom:.4rem;line-height:1.2;}
+.header h1 span{color:#46e891;}
+.header p{font-size:13px;color:#64748b;line-height:1.6;}
+
+/* GRID */
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;width:100%;max-width:900px;margin-bottom:2rem;}
+
+/* GAME CARD */
+.game-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative;}
+.game-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.2);box-shadow:0 20px 40px rgba(0,0,0,.4);}
+.game-card:active{transform:scale(.98);}
+.card-top{padding:1.5rem;position:relative;}
+.card-emoji{font-size:52px;display:block;margin-bottom:.8rem;filter:drop-shadow(0 4px 8px rgba(0,0,0,.3));}
+.card-diapo{font-size:10px;font-weight:700;letter-spacing:.08em;margin-bottom:.3rem;}
+.card-title{font-size:18px;font-weight:900;color:#fff;margin-bottom:.3rem;line-height:1.3;}
+.card-desc{font-size:12px;color:#64748b;line-height:1.5;}
+.card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:.8rem;}
+.tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;}
+.card-bottom{padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.06);}
+.card-duration{font-size:11px;color:#475569;}
+.card-play{font-size:12px;font-weight:700;border-radius:20px;padding:5px 14px;border:none;cursor:pointer;transition:all .15s;}
+
+/* CARD THEMES */
+.card-green .card-diapo{color:#4ade80;}
+.card-green .card-top{background:linear-gradient(135deg,rgba(22,163,74,.15),rgba(5,150,105,.1));}
+.card-green .card-play{background:#16a34a;color:#fff;}
+.card-green .tag{background:rgba(74,222,128,.15);color:#4ade80;}
+
+.card-blue .card-diapo{color:#60a5fa;}
+.card-blue .card-top{background:linear-gradient(135deg,rgba(37,99,235,.15),rgba(29,78,216,.1));}
+.card-blue .card-play{background:#2563eb;color:#fff;}
+.card-blue .tag{background:rgba(96,165,250,.15);color:#60a5fa;}
+
+.card-amber .card-diapo{color:#fbbf24;}
+.card-amber .card-top{background:linear-gradient(135deg,rgba(217,119,6,.15),rgba(146,64,14,.1));}
+.card-amber .card-play{background:#d97706;color:#fff;}
+.card-amber .tag{background:rgba(251,191,36,.15);color:#fbbf24;}
+
+.card-purple .card-diapo{color:#a78bfa;}
+.card-purple .card-top{background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(91,33,182,.1));}
+.card-purple .card-play{background:#7c3aed;color:#fff;}
+.card-purple .tag{background:rgba(167,139,250,.15);color:#a78bfa;}
+
+.card-coral .card-diapo{color:#fb7185;}
+.card-coral .card-top{background:linear-gradient(135deg,rgba(225,29,72,.15),rgba(190,18,60,.1));}
+.card-coral .card-play{background:#e11d48;color:#fff;}
+.card-coral .tag{background:rgba(251,113,133,.15);color:#fb7185;}
+
+.card-teal .card-diapo{color:#2dd4bf;}
+.card-teal .card-top{background:linear-gradient(135deg,rgba(13,148,136,.15),rgba(15,118,110,.1));}
+.card-teal .card-play{background:#0d9488;color:#fff;}
+.card-teal .tag{background:rgba(45,212,191,.15);color:#2dd4bf;}
+
+/* KAHOOT SPECIAL */
+.card-kahoot{grid-column:1/-1;}
+.card-kahoot .card-top{background:linear-gradient(135deg,rgba(70,232,145,.15),rgba(5,150,105,.1));}
+.card-kahoot .card-diapo{color:#46e891;}
+.card-kahoot .card-play{background:linear-gradient(135deg,#46e891,#059669);color:#000;}
+.card-kahoot .tag{background:rgba(70,232,145,.15);color:#46e891;}
+
+/* FOOTER */
+.footer{text-align:center;margin-top:1rem;}
+.footer p{font-size:11px;color:#1e293b;line-height:1.8;}
+
+/* MODAL OVERLAY */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9999;display:none;flex-direction:column;}
+.modal.open{display:flex;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.2rem;background:#0f172a;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.08);}
+.modal-title{font-size:14px;font-weight:700;color:#fff;}
+.btn-close-modal{background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:'Montserrat',Arial,sans-serif;font-weight:700;transition:background .15s;}
+.btn-close-modal:hover{background:rgba(255,255,255,.2);}
+.modal-iframe{flex:1;border:none;width:100%;height:100%;}
+
+/* RESPONSIVE */
+@media(max-width:500px){
+  .header h1{font-size:26px;}
+  .games-grid{grid-template-columns:1fr;}
+  .card-kahoot{grid-column:1;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg" id="bg" style="background: radial-gradient(at 30% 20%, rgb(15, 26, 62) 0%, rgb(10, 10, 26) 50%, rgb(10, 26, 10) 100%);"><div class="star" style="width: 1px; height: 1px; top: 49.2032vh; left: 90.4893vw; animation-duration: 6.77647s; animation-delay: 0.0958378s;"></div><div class="star" style="width: 1px; height: 1px; top: 47.1529vh; left: 91.6255vw; animation-duration: 5.39003s; animation-delay: 1.86445s;"></div><div class="star" style="width: 1px; height: 1px; top: 27.2084vh; left: 90.5158vw; animation-duration: 3.80134s; animation-delay: 3.66932s;"></div><div class="star" style="width: 1px; height: 1px; top: 30.9934vh; left: 25.349vw; animation-duration: 4.02191s; animation-delay: 0.702562s;"></div><div class="star" style="width: 1px; height: 1px; top: 49.6338vh; left: 75.9833vw; animation-duration: 6.48108s; animation-delay: 0.370716s;"></div><div class="star" style="width: 2px; height: 2px; top: 71.8894vh; left: 95.2253vw; animation-duration: 4.72432s; animation-delay: 3.53421s;"></div><div class="star" style="width: 1px; height: 1px; top: 58.3108vh; left: 75.5172vw; animation-duration: 3.49252s; animation-delay: 0.504508s;"></div><div class="star" style="width: 2px; height: 2px; top: 42.1742vh; left: 1.01052vw; animation-duration: 4.87953s; animation-delay: 4.62318s;"></div><div class="star" style="width: 1px; height: 1px; top: 90.7712vh; left: 44.0812vw; animation-duration: 5.03754s; animation-delay: 2.49431s;"></div><div class="star" style="width: 3px; height: 3px; top: 40.6477vh; left: 71.9614vw; animation-duration: 5.19968s; animation-delay: 3.5583s;"></div><div class="star" style="width: 3px; height: 3px; top: 97.2594vh; left: 24.2023vw; animation-duration: 2.83803s; animation-delay: 0.635776s;"></div><div class="star" style="width: 2px; height: 2px; top: 32.2099vh; left: 48.8595vw; animation-duration: 4.29106s; animation-delay: 2.21197s;"></div><div class="star" style="width: 1px; height: 1px; top: 70.3631vh; left: 0.732727vw; animation-duration: 2.11119s; animation-delay: 1.70151s;"></div><div class="star" style="width: 3px; height: 3px; top: 73.4153vh; left: 96.5746vw; animation-duration: 4.5237s; animation-delay: 1.14113s;"></div><div class="star" style="width: 2px; height: 2px; top: 28.9022vh; left: 52.7844vw; animation-duration: 3.3353s; animation-delay: 1.35611s;"></div><div class="star" style="width: 3px; height: 3px; top: 83.1836vh; left: 37.4806vw; animation-duration: 6.44137s; animation-delay: 4.42823s;"></div><div class="star" style="width: 1px; height: 1px; top: 64.1651vh; left: 69.1115vw; animation-duration: 5.88063s; animation-delay: 1.574s;"></div><div class="star" style="width: 2px; height: 2px; top: 27.4329vh; left: 49.7964vw; animation-duration: 3.24156s; animation-delay: 4.4453s;"></div><div class="star" style="width: 1px; height: 1px; top: 94.4386vh; left: 95.6287vw; animation-duration: 2.88056s; animation-delay: 2.90763s;"></div><div class="star" style="width: 3px; height: 3px; top: 28.5306vh; left: 9.08174vw; animation-duration: 2.82114s; animation-delay: 4.89615s;"></div><div class="star" style="width: 1px; height: 1px; top: 19.0191vh; left: 48.1148vw; animation-duration: 3.08882s; animation-delay: 3.91237s;"></div><div class="star" style="width: 1px; height: 1px; top: 43.9739vh; left: 23.5366vw; animation-duration: 4.08517s; animation-delay: 0.495504s;"></div><div class="star" style="width: 3px; height: 3px; top: 25.4603vh; left: 18.6761vw; animation-duration: 3.34337s; animation-delay: 2.80051s;"></div><div class="star" style="width: 1px; height: 1px; top: 16.9027vh; left: 68.4648vw; animation-duration: 4.43831s; animation-delay: 1.27927s;"></div><div class="star" style="width: 2px; height: 2px; top: 41.5021vh; left: 29.5197vw; animation-duration: 6.75516s; animation-delay: 2.47958s;"></div><div class="star" style="width: 2px; height: 2px; top: 88.7141vh; left: 12.2062vw; animation-duration: 5.23901s; animation-delay: 2.73829s;"></div><div class="star" style="width: 1px; height: 1px; top: 37.5703vh; left: 3.29391vw; animation-duration: 2.29684s; animation-delay: 1.68967s;"></div><div class="star" style="width: 1px; height: 1px; top: 34.243vh; left: 7.19879vw; animation-duration: 2.63275s; animation-delay: 0.671607s;"></div><div class="star" style="width: 3px; height: 3px; top: 24.9315vh; left: 69.1372vw; animation-duration: 5.15581s; animation-delay: 0.346636s;"></div><div class="star" style="width: 3px; height: 3px; top: 38.4937vh; left: 14.8619vw; animation-duration: 4.01002s; animation-delay: 1.33761s;"></div><div class="star" style="width: 2px; height: 2px; top: 95.2201vh; left: 93.2004vw; animation-duration: 4.46925s; animation-delay: 4.64024s;"></div><div class="star" style="width: 2px; height: 2px; top: 75.0534vh; left: 74.2457vw; animation-duration: 3.80247s; animation-delay: 3.61097s;"></div><div class="star" style="width: 1px; height: 1px; top: 71.1471vh; left: 93.9202vw; animation-duration: 3.27546s; animation-delay: 1.86841s;"></div><div class="star" style="width: 1px; height: 1px; top: 25.7318vh; left: 42.0122vw; animation-duration: 2.47505s; animation-delay: 4.15222s;"></div><div class="star" style="width: 3px; height: 3px; top: 2.51871vh; left: 55.1661vw; animation-duration: 6.01655s; animation-delay: 3.39994s;"></div><div class="star" style="width: 1px; height: 1px; top: 50.9093vh; left: 52.0044vw; animation-duration: 3.21728s; animation-delay: 3.77934s;"></div><div class="star" style="width: 2px; height: 2px; top: 57.5197vh; left: 38.9641vw; animation-duration: 4.17629s; animation-delay: 2.13656s;"></div><div class="star" style="width: 2px; height: 2px; top: 49.8351vh; left: 6.32934vw; animation-duration: 4.59808s; animation-delay: 1.17679s;"></div><div class="star" style="width: 1px; height: 1px; top: 85.001vh; left: 8.26727vw; animation-duration: 6.51539s; animation-delay: 4.99972s;"></div><div class="star" style="width: 1px; height: 1px; top: 26.1614vh; left: 91.5815vw; animation-duration: 5.39965s; animation-delay: 1.9793s;"></div><div class="star" style="width: 2px; height: 2px; top: 17.3495vh; left: 87.2504vw; animation-duration: 6.54304s; animation-delay: 4.47115s;"></div><div class="star" style="width: 2px; height: 2px; top: 86.8399vh; left: 92.5513vw; animation-duration: 4.27877s; animation-delay: 4.20804s;"></div><div class="star" style="width: 2px; height: 2px; top: 3.67396vh; left: 60.6747vw; animation-duration: 6.81588s; animation-delay: 2.73265s;"></div><div class="star" style="width: 2px; height: 2px; top: 50.7694vh; left: 18.4249vw; animation-duration: 4.2686s; animation-delay: 3.71895s;"></div><div class="star" style="width: 2px; height: 2px; top: 9.80892vh; left: 21.4971vw; animation-duration: 5.09115s; animation-delay: 0.588758s;"></div><div class="star" style="width: 2px; height: 2px; top: 43.2259vh; left: 59.9214vw; animation-duration: 4.51201s; animation-delay: 3.88334s;"></div><div class="star" style="width: 1px; height: 1px; top: 80.8475vh; left: 92.6367vw; animation-duration: 2.13134s; animation-delay: 4.95742s;"></div><div class="star" style="width: 1px; height: 1px; top: 78.0604vh; left: 86.5944vw; animation-duration: 5.36828s; animation-delay: 1.17647s;"></div><div class="star" style="width: 2px; height: 2px; top: 6.2772vh; left: 89.1094vw; animation-duration: 6.08908s; animation-delay: 1.4988s;"></div><div class="star" style="width: 1px; height: 1px; top: 17.4171vh; left: 47.8222vw; animation-duration: 3.16412s; animation-delay: 0.331019s;"></div><div class="star" style="width: 1px; height: 1px; top: 75.4951vh; left: 50.0586vw; animation-duration: 3.55339s; animation-delay: 1.60377s;"></div><div class="star" style="width: 2px; height: 2px; top: 53.0383vh; left: 11.1261vw; animation-duration: 4.16562s; animation-delay: 1.24767s;"></div><div class="star" style="width: 2px; height: 2px; top: 47.5468vh; left: 44.767vw; animation-duration: 2.61967s; animation-delay: 3.42813s;"></div><div class="star" style="width: 1px; height: 1px; top: 29.4052vh; left: 78.7743vw; animation-duration: 5.67823s; animation-delay: 0.155294s;"></div><div class="star" style="width: 1px; height: 1px; top: 52.7723vh; left: 82.6472vw; animation-duration: 5.55621s; animation-delay: 1.08154s;"></div><div class="star" style="width: 2px; height: 2px; top: 31.9618vh; left: 19.3952vw; animation-duration: 6.64734s; animation-delay: 1.48008s;"></div><div class="star" style="width: 3px; height: 3px; top: 6.2614vh; left: 28.5662vw; animation-duration: 3.69892s; animation-delay: 0.0835181s;"></div><div class="star" style="width: 1px; height: 1px; top: 17.6964vh; left: 91.8125vw; animation-duration: 5.07969s; animation-delay: 4.33002s;"></div><div class="star" style="width: 2px; height: 2px; top: 60.533vh; left: 67.9689vw; animation-duration: 4.54775s; animation-delay: 3.4512s;"></div><div class="star" style="width: 2px; height: 2px; top: 8.3756vh; left: 95.7219vw; animation-duration: 4.1102s; animation-delay: 4.74314s;"></div><div class="star" style="width: 1px; height: 1px; top: 84.3496vh; left: 99.6474vw; animation-duration: 4.44972s; animation-delay: 3.05289s;"></div><div class="star" style="width: 1px; height: 1px; top: 10.9605vh; left: 44.0989vw; animation-duration: 5.81119s; animation-delay: 2.61181s;"></div><div class="star" style="width: 3px; height: 3px; top: 29.5182vh; left: 56.4734vw; animation-duration: 5.2774s; animation-delay: 0.207163s;"></div><div class="star" style="width: 3px; height: 3px; top: 5.01096vh; left: 40.2481vw; animation-duration: 4.69495s; animation-delay: 4.92s;"></div><div class="star" style="width: 2px; height: 2px; top: 7.13196vh; left: 2.50137vw; animation-duration: 2.54155s; animation-delay: 4.3979s;"></div><div class="star" style="width: 3px; height: 3px; top: 97.7513vh; left: 73.7995vw; animation-duration: 5.37214s; animation-delay: 3.3079s;"></div><div class="star" style="width: 1px; height: 1px; top: 44.1999vh; left: 0.0832558vw; animation-duration: 3.17583s; animation-delay: 2.87268s;"></div><div class="star" style="width: 2px; height: 2px; top: 81.8643vh; left: 35.4248vw; animation-duration: 5.31271s; animation-delay: 4.5029s;"></div><div class="star" style="width: 1px; height: 1px; top: 61.782vh; left: 60.7739vw; animation-duration: 6.20614s; animation-delay: 0.591622s;"></div><div class="star" style="width: 2px; height: 2px; top: 65.1244vh; left: 7.93241vw; animation-duration: 3.11562s; animation-delay: 0.940982s;"></div><div class="star" style="width: 1px; height: 1px; top: 50.3917vh; left: 63.3367vw; animation-duration: 2.87267s; animation-delay: 3.15993s;"></div><div class="star" style="width: 2px; height: 2px; top: 54.1879vh; left: 52.5685vw; animation-duration: 4.8446s; animation-delay: 4.9223s;"></div><div class="star" style="width: 3px; height: 3px; top: 75.6085vh; left: 52.4854vw; animation-duration: 2.8966s; animation-delay: 4.84918s;"></div><div class="star" style="width: 2px; height: 2px; top: 1.45088vh; left: 45.64vw; animation-duration: 2.59924s; animation-delay: 2.37625s;"></div><div class="star" style="width: 2px; height: 2px; top: 81.3109vh; left: 14.476vw; animation-duration: 4.23103s; animation-delay: 1.53476s;"></div><div class="star" style="width: 3px; height: 3px; top: 83.2696vh; left: 61.6395vw; animation-duration: 2.00761s; animation-delay: 4.77531s;"></div><div class="star" style="width: 1px; height: 1px; top: 17.3037vh; left: 65.2233vw; animation-duration: 3.92137s; animation-delay: 4.8372s;"></div><div class="star" style="width: 3px; height: 3px; top: 50.9201vh; left: 6.46838vw; animation-duration: 5.10757s; animation-delay: 0.332464s;"></div><div class="star" style="width: 3px; height: 3px; top: 53.289vh; left: 62.7846vw; animation-duration: 4.13042s; animation-delay: 2.47795s;"></div><div class="star" style="width: 2px; height: 2px; top: 61.1939vh; left: 9.83167vw; animation-duration: 6.70087s; animation-delay: 2.12792s;"></div><div class="star" style="width: 2px; height: 2px; top: 43.585vh; left: 22.6173vw; animation-duration: 4.26484s; animation-delay: 3.04894s;"></div><div class="star" style="width: 1px; height: 1px; top: 26.7049vh; left: 49.6104vw; animation-duration: 3.32492s; animation-delay: 4.58948s;"></div><div class="star" style="width: 1px; height: 1px; top: 15.0995vh; left: 31.8039vw; animation-duration: 3.8046s; animation-delay: 0.843186s;"></div><div class="star" style="width: 2px; height: 2px; top: 8.39506vh; left: 77.7028vw; animation-duration: 2.5313s; animation-delay: 3.76479s;"></div><div class="star" style="width: 1px; height: 1px; top: 33.4764vh; left: 43.5052vw; animation-duration: 3.46943s; animation-delay: 1.74021s;"></div><div class="star" style="width: 3px; height: 3px; top: 98.3791vh; left: 29.4545vw; animation-duration: 5.7324s; animation-delay: 1.40831s;"></div><div class="star" style="width: 2px; height: 2px; top: 42.3748vh; left: 47.4534vw; animation-duration: 3.37673s; animation-delay: 2.04121s;"></div><div class="star" style="width: 1px; height: 1px; top: 32.9826vh; left: 97.3972vw; animation-duration: 5.03085s; animation-delay: 1.50035s;"></div><div class="star" style="width: 2px; height: 2px; top: 89.3219vh; left: 77.8837vw; animation-duration: 6.81165s; animation-delay: 0.561365s;"></div><div class="star" style="width: 2px; height: 2px; top: 62.7278vh; left: 21.4848vw; animation-duration: 3.35841s; animation-delay: 2.2311s;"></div><div class="star" style="width: 1px; height: 1px; top: 8.53955vh; left: 30.4679vw; animation-duration: 5.97878s; animation-delay: 1.83822s;"></div><div class="star" style="width: 2px; height: 2px; top: 17.1139vh; left: 36.8019vw; animation-duration: 4.32214s; animation-delay: 2.49967s;"></div><div class="star" style="width: 3px; height: 3px; top: 80.8045vh; left: 29.7037vw; animation-duration: 3.71342s; animation-delay: 1.98784s;"></div><div class="star" style="width: 2px; height: 2px; top: 84.751vh; left: 37.2943vw; animation-duration: 4.4891s; animation-delay: 1.52141s;"></div><div class="star" style="width: 3px; height: 3px; top: 83.7714vh; left: 0.389624vw; animation-duration: 5.87819s; animation-delay: 2.02849s;"></div><div class="star" style="width: 1px; height: 1px; top: 8.21884vh; left: 46.5756vw; animation-duration: 5.85871s; animation-delay: 0.463565s;"></div><div class="star" style="width: 1px; height: 1px; top: 64.4737vh; left: 69.0143vw; animation-duration: 3.02709s; animation-delay: 3.42284s;"></div><div class="star" style="width: 3px; height: 3px; top: 58.0808vh; left: 60.164vw; animation-duration: 2.33618s; animation-delay: 3.82963s;"></div><div class="star" style="width: 3px; height: 3px; top: 11.0478vh; left: 63.2677vw; animation-duration: 2.18954s; animation-delay: 2.4993s;"></div><div class="star" style="width: 1px; height: 1px; top: 17.8429vh; left: 45.5577vw; animation-duration: 4.51942s; animation-delay: 0.121437s;"></div></div>
+
+<!-- MODAL for games -->
+<div class="modal" id="game-modal">
+  <div class="modal-header">
+    <span class="modal-title" id="modal-title">Activité</span>
+    <button class="btn-close-modal" onclick="closeModal()">✕ Fermer</button>
+  </div>
+  <iframe class="modal-iframe" id="game-iframe" src="./🎯 Formation RH — Admin Personnel_files/saved_resource.html" allowfullscreen=""></iframe>
+</div>
+
+<div class="app">
+
+  <div class="header">
+    <div class="header-badge">🎓 TFP CHEF DE CUISINE — ADMIN DU PERSONNEL</div>
+    <h1>Formation <span>Interactive</span></h1>
+    <p>Toutes les activités de formation en un seul endroit.<br>Clique sur une activité pour la lancer !</p>
+  </div>
+
+  <div class="games-grid">
+
+    <!-- KAHOOT -->
+    <div class="game-card card-kahoot" onclick="openGame(&#39;kahoot&#39;,&#39;🎯 KahootRH — Multijoueur&#39;)">
+      <div class="card-top">
+        <span class="card-emoji">🎯</span>
+        <div class="card-diapo">DIAPOSITIVES 12–19 · TOUS THÈMES</div>
+        <div class="card-title">KahootRH Multijoueur</div>
+        <div class="card-desc">Le vrai Kahoot ! Chaque joueur sur son téléphone, code de salle, classement en direct, podium. Jusqu'à 10 joueurs simultanés.</div>
+        <div class="card-tags">
+          <span class="tag">👥 Multijoueur</span>
+          <span class="tag">📱 Sur téléphone</span>
+          <span class="tag">🏆 Classement live</span>
+          <span class="tag">🎉 Confettis</span>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="card-duration">⏱ 20–30 min</span>
+        <button class="card-play">▶ Lancer</button>
+      </div>
+    </div>
+
+    <!-- ROUE -->
+    <div class="game-card card-amber" onclick="openGame(&#39;roue&#39;,&#39;🎡 Roue de la Fortune&#39;)">
+      <div class="card-top">
+        <span class="card-emoji">🎡</span>
+        <div class="card-diapo">TOUTES DIAPOSITIVES</div>
+        <div class="card-title">Roue de la Fortune</div>
+        <div class="card-desc">Désigne un groupe ou un participant au hasard ! Sons, animations, confettis et overlay gagnant explosif.</div>
+        <div class="card-tags">
+          <span class="tag">🎵 Avec sons</span>
+          <span class="tag">🎉 Confettis</span>
+          <span class="tag">⚙️ Personnalisable</span>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="card-duration">⏱ À tout moment</span>
+        <button class="card-play">▶ Tourner</button>
+      </div>
+    </div>
+
+    <!-- CARTE AU TRÉSOR -->
+    <div class="game-card card-teal" onclick="openGame(&#39;tresor&#39;,&#39;🗺️ Carte au Trésor — VIP Médicale&#39;)">
+      <div class="card-top">
+        <span class="card-emoji">🗺️</span>
+        <div class="card-diapo">DIAPOSITIVES 17–18 · VIP MÉDICALE</div>
+        <div class="card-title">Carte au Trésor</div>
+        <div class="card-desc">6 indices à déchiffrer pour trouver le trésor ! Chaque bonne réponse rapproche du coffre. Délais VIP, cas particuliers, Kiosque RH.</div>
+        <div class="card-tags">
+          <span class="tag">🔍 6 indices</span>
+          <span class="tag">💰 Points bonus</span>
+          <span class="tag">🏅 Score final</span>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="card-duration">⏱ 10–15 min</span>
+        <button class="card-play">▶ Explorer</button>
+      </div>
+    </div>
+
+    <!-- JEU VIDÉO -->
+    <div class="game-card card-purple" onclick="openGame(&#39;jeu&#39;,&#39;🎮 RH Quest — Période d\&#39;essai&#39;)">
+      <div class="card-top">
+        <span class="card-emoji">🎮</span>
+        <div class="card-diapo">DIAPOSITIVE 21 · PÉRIODE D'ESSAI</div>
+        <div class="card-title">RH Quest</div>
+        <div class="card-desc">Style jeu vidéo rétro ! 3 vies, 8 niveaux, effets sonores pixel. Maîtrise les règles de la période d'essai pour battre le boss final.</div>
+        <div class="card-tags">
+          <span class="tag">❤️ 3 vies</span>
+          <span class="tag">⚔️ 8 niveaux</span>
+          <span class="tag">👾 Style rétro</span>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="card-duration">⏱ 10–15 min</span>
+        <button class="card-play">▶ Jouer</button>
+      </div>
+    </div>
+
+    <!-- TOURNOI -->
+    <div class="game-card card-green" onclick="openGame(&#39;tournoi&#39;,&#39;🏆 Tournoi des Centièmes&#39;)">
+      <div class="card-top">
+        <span class="card-emoji">🏆</span>
+        <div class="card-diapo">DIAPOSITIVE 26 · CALCUL CENTIÈMES</div>
+        <div class="card-title">Tournoi des Centièmes</div>
+        <div class="card-desc">Compétition en brackets ! 4 équipes s'affrontent en duels de calcul. Demi-finales, finale, podium. Qui sera champion des centièmes ?</div>
+        <div class="card-tags">
+          <span class="tag">⚔️ Tournoi</span>
+          <span class="tag">🧮 Calculs</span>
+          <span class="tag">🏆 Podium</span>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="card-duration">⏱ 15–20 min</span>
+        <button class="card-play">▶ Tournoyer</button>
+      </div>
+    </div>
+
+    <!-- QUIZ BOWLING -->
+    <div class="game-card card-amber" onclick="openGame(&#39;bowling&#39;,&#39;🎳 Quiz Bowling — Délais Contrats&#39;)">
+      <div class="card-top">
+        <span class="card-emoji">🎳</span>
+        <div class="card-diapo">DIAPOSITIVE 16 · CDD / CDI</div>
+        <div class="card-title">Quiz Bowling</div>
+        <div class="card-desc">Bonne réponse = STRIKE ! La boule roule, les quilles tombent, les sons explosent. 8 questions sur les délais de signature des contrats.</div>
+        <div class="card-tags">
+          <span class="tag">🎳 Strike !</span>
+          <span class="tag">🔊 Sons</span>
+          <span class="tag">⏱ 20 sec</span>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="card-duration">⏱ 10 min</span>
+        <button class="card-play">▶ Lancer</button>
+      </div>
+    </div>
+
+    <!-- CHECKLIST -->
+    <div class="game-card card-blue" onclick="openGame(&#39;checklist&#39;,&#39;🗂️ Dossier d\&#39;Embauche&#39;)">
+      <div class="card-top">
+        <span class="card-emoji">🗂️</span>
+        <div class="card-diapo">DIAPOSITIVE 15 · DOCUMENTS EMBAUCHE</div>
+        <div class="card-title">Le Dossier d'Embauche</div>
+        <div class="card-desc">12 documents à trier — 7 obligatoires, 5 pièges ! Chrono 3 minutes, correction immédiate. Les pièges font toujours réagir.</div>
+        <div class="card-tags">
+          <span class="tag">⏱ 3 min</span>
+          <span class="tag">⚠️ Pièges</span>
+          <span class="tag">✅ Correction</span>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="card-duration">⏱ 10 min</span>
+        <button class="card-play">▶ Jouer</button>
+      </div>
+    </div>
+
+    <!-- VRAI FAUX -->
+    <div class="game-card card-coral" onclick="openGame(&#39;vraifaux&#39;,&#39;⚖️ Vrai ou Faux — Contrats&#39;)">
+      <div class="card-top">
+        <span class="card-emoji">⚖️</span>
+        <div class="card-diapo">DIAPOSITIVE 16 · DÉLAIS CONTRATS</div>
+        <div class="card-title">Vrai ou Faux</div>
+        <div class="card-desc">8 affirmations, 20 secondes chacune. Levez la main pour VRAI, restez assis pour FAUX. Correction + référence légale après chaque réponse.</div>
+        <div class="card-tags">
+          <span class="tag">✋ Main levée</span>
+          <span class="tag">📋 Références légales</span>
+          <span class="tag">8 questions</span>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="card-duration">⏱ 15 min</span>
+        <button class="card-play">▶ Jouer</button>
+      </div>
+    </div>
+
+    <!-- ONBOARDING -->
+    <div class="game-card card-green" onclick="openGame(&#39;onboarding&#39;,&#39;🧳 Onboarding — Drag &amp; Drop&#39;)">
+      <div class="card-top">
+        <span class="card-emoji">🧳</span>
+        <div class="card-diapo">DIAPOSITIVE 19 · ACCUEIL COLLABORATEUR</div>
+        <div class="card-title">Onboarding Drag &amp; Drop</div>
+        <div class="card-desc">12 actions à glisser-déposer dans les bonnes colonnes : AVANT / PENDANT / APRÈS l'arrivée. Correction instantanée avec conseils.</div>
+        <div class="card-tags">
+          <span class="tag">🖱️ Glisser-déposer</span>
+          <span class="tag">3 colonnes</span>
+          <span class="tag">12 actions</span>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="card-duration">⏱ 10 min</span>
+        <button class="card-play">▶ Classer</button>
+      </div>
+    </div>
+
+    <!-- SCENARIOS -->
+    <div class="game-card card-coral" onclick="openGame(&#39;stagiaire&#39;,&#39;⚡ Le Stagiaire Pressé&#39;)">
+      <div class="card-top">
+        <span class="card-emoji">⚡</span>
+        <div class="card-diapo">DIAPOSITIVES 12–14 · AUTORISATIONS</div>
+        <div class="card-title">Le Stagiaire Pressé</div>
+        <div class="card-desc">3 scénarios chocs : chef qui fait travailler sans autorisation, titre de séjour non vérifié, poste pourvu sans validation. Identifier les fautes et sanctions.</div>
+        <div class="card-tags">
+          <span class="tag">🎭 Scénarios</span>
+          <span class="tag">⚖️ Sanctions</span>
+          <span class="tag">3 cas</span>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="card-duration">⏱ 10 min</span>
+        <button class="card-play">▶ Enquêter</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <p>Administration du Personnel · TFP Chef de Cuisine · Diapositives 12–26</p>
+  </div>
+
+</div>
+
+<script>
+// Stars
+const bg=document.getElementById('bg');
+bg.style.background='radial-gradient(ellipse at 30% 20%,#0f1a3e 0%,#0a0a1a 50%,#0a1a0a 100%)';
+for(let i=0;i<100;i++){
+  const s=document.createElement('div');s.className='star';
+  const sz=Math.random()>.8?3:Math.random()>.5?2:1;
+  s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}vh;left:${Math.random()*100}vw;animation-duration:${2+Math.random()*5}s;animation-delay:${Math.random()*5}s;`;
+  bg.appendChild(s);
+}
+
+// Game URLs — all stored as inline data URIs or paths
+// Since all files are in the same folder on GitHub, use relative paths
+const GAMES = {
+  kahoot:    {url:'kahoot/index.html',     title:'🎯 KahootRH Multijoueur'},
+  roue:      {url:'roue_fortune.html',     title:'🎡 Roue de la Fortune'},
+  tresor:    {url:'carte_tresor_vip.html', title:'🗺️ Carte au Trésor — VIP'},
+  jeu:       {url:'jeu_video_periode_essai.html', title:'🎮 RH Quest'},
+  tournoi:   {url:'tournoi_centiemes.html',title:'🏆 Tournoi des Centièmes'},
+  bowling:   {url:'bowling_quiz.html',     title:'🎳 Quiz Bowling'},
+  checklist: {url:'checklist_embauche.html',title:'🗂️ Dossier d\'Embauche'},
+  vraifaux:  {url:'vrai_faux_contrats.html',title:'⚖️ Vrai ou Faux'},
+  onboarding:{url:'onboarding_drag_drop.html',title:'🧳 Onboarding'},
+  stagiaire: {url:'stagiaire_presse.html', title:'⚡ Stagiaire Pressé'},
+};
+
+function openGame(key, title){
+  const game=GAMES[key];
+  document.getElementById('modal-title').textContent=game.title||title;
+  document.getElementById('game-iframe').src=game.url;
+  document.getElementById('game-modal').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('game-modal').classList.remove('open');
+  document.getElementById('game-iframe').src='about:blank';
+}
+
+// Close with Escape
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+</script>
+
+
+</body></html>

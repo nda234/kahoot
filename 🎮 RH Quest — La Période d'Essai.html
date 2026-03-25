@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<!-- saved from url=(0069)file:///C:/Users/0189334/Downloads/jeu_video_periode_essai%20(1).html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🎮 RH Quest — La Période d'Essai</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Montserrat:wght@400;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Montserrat',Arial,sans-serif;background:#000;min-height:100vh;overflow-x:hidden;}
+
+/* PIXEL BG */
+.bg{position:fixed;inset:0;background:linear-gradient(180deg,#0d0221 0%,#1a0533 50%,#0d0221 100%);z-index:0;}
+.pixel-star{position:fixed;background:#fff;animation:pixelBlink step-end infinite;z-index:0;}
+@keyframes pixelBlink{0%,100%{opacity:1;}50%{opacity:0;}}
+.scanline{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);pointer-events:none;z-index:998;}
+
+/* SCREENS */
+.screen{display:none;position:relative;z-index:1;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;}
+
+/* PIXEL FONT */
+.pixel{font-family:'Press Start 2P',monospace;}
+
+/* ── TITLE SCREEN ── */
+#title{text-align:center;}
+.game-title{font-family:'Press Start 2P',monospace;font-size:24px;color:#fff;margin-bottom:.3rem;text-shadow:3px 3px #8338ec, 6px 6px #3a86ff;}
+.game-title-2{font-family:'Press Start 2P',monospace;font-size:14px;color:#fbbf24;margin-bottom:2rem;text-shadow:2px 2px #d97706;}
+.sprite{font-size:64px;margin-bottom:1rem;animation:spriteWalk .5s steps(2) infinite;}
+@keyframes spriteWalk{0%{transform:scaleX(1);}50%{transform:scaleX(-1);}}
+.title-info{font-size:13px;color:#94a3b8;line-height:1.8;margin-bottom:1.5rem;}
+.title-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:400px;margin:0 auto 2rem;}
+.stat-box{background:rgba(131,56,236,.2);border:2px solid #8338ec;border-radius:8px;padding:.8rem;text-align:center;}
+.stat-val{font-family:'Press Start 2P',monospace;font-size:16px;color:#a78bfa;display:block;margin-bottom:.3rem;}
+.stat-lbl{font-size:10px;color:#7c3aed;}
+.btn-start-game{font-family:'Press Start 2P',monospace;background:#8338ec;color:#fff;border:3px solid #a78bfa;padding:14px 32px;font-size:12px;cursor:pointer;letter-spacing:1px;image-rendering:pixelated;transition:transform .1s;box-shadow:4px 4px 0 #4c1d95;}
+.btn-start-game:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #4c1d95;}
+.btn-start-game:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #4c1d95;}
+.blink{animation:blink 1s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* ── HUD ── */
+.hud{width:100%;max-width:700px;display:flex;align-items:center;justify-content:space-between;background:#000;border:2px solid #8338ec;padding:.6rem 1rem;margin-bottom:.8rem;font-family:'Press Start 2P',monospace;font-size:10px;}
+.hud-lives{color:#ef4444;}
+.hud-score{color:#fbbf24;}
+.hud-level{color:#4ade80;}
+.hud-name{color:#a78bfa;font-size:8px;}
+
+/* LEVEL BANNER */
+.level-banner{width:100%;max-width:700px;background:linear-gradient(135deg,#1e1b4b,#312e81);border:2px solid #6366f1;border-radius:8px;padding:.6rem 1rem;margin-bottom:.8rem;display:flex;align-items:center;justify-content:space-between;}
+.level-title{font-family:'Press Start 2P',monospace;font-size:10px;color:#a5b4fc;}
+.level-enemy{font-size:24px;animation:enemyFloat 1s ease-in-out infinite;}
+@keyframes enemyFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+
+/* QUESTION CARD */
+.q-card{width:100%;max-width:700px;background:#0f172a;border:3px solid #8338ec;border-radius:4px;padding:1.2rem;margin-bottom:.8rem;position:relative;}
+.q-card::before{content:'';position:absolute;top:-3px;left:20px;right:20px;height:3px;background:linear-gradient(90deg,#8338ec,#a78bfa,#8338ec);}
+.q-level-tag{font-family:'Press Start 2P',monospace;font-size:8px;color:#6366f1;margin-bottom:.6rem;}
+.q-text{font-size:15px;font-weight:700;color:#e2e8f0;line-height:1.6;margin-bottom:.4rem;}
+.q-ctx{font-size:11px;color:#475569;font-style:italic;}
+
+/* TIMER BAR */
+.timer-wrap{width:100%;max-width:700px;margin-bottom:.8rem;}
+.timer-label{font-family:'Press Start 2P',monospace;font-size:8px;color:#94a3b8;margin-bottom:.3rem;}
+.timer-bar{height:12px;background:#1e293b;border:2px solid #334155;border-radius:2px;overflow:hidden;}
+.timer-fill{height:100%;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width .1s linear;}
+.timer-fill.warn{background:linear-gradient(90deg,#fbbf24,#d97706);}
+.timer-fill.danger{background:linear-gradient(90deg,#ef4444,#dc2626);animation:dangerPulse .3s ease-in-out infinite;}
+@keyframes dangerPulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+
+/* ANSWER BUTTONS */
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:700px;margin-bottom:.8rem;}
+.ans-btn{background:#1e293b;border:2px solid #334155;border-radius:4px;padding:.9rem;cursor:pointer;font-family:'Montserrat',Arial,sans-serif;font-size:13px;font-weight:700;color:#e2e8f0;text-align:left;display:flex;align-items:center;gap:8px;transition:all .1s;position:relative;overflow:hidden;}
+.ans-btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.05);opacity:0;transition:opacity .1s;}
+.ans-btn:hover::before{opacity:1;}
+.ans-btn:hover{border-color:#6366f1;transform:translateY(-1px);}
+.ans-btn:active{transform:scale(.98);}
+.ans-key{font-family:'Press Start 2P',monospace;font-size:10px;width:28px;height:28px;background:#0f172a;border:2px solid #334155;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#6366f1;}
+.ans-btn.correct{background:#052e16;border-color:#4ade80;color:#4ade80;}
+.ans-btn.correct .ans-key{border-color:#4ade80;color:#4ade80;}
+.ans-btn.wrong{background:#450a0a;border-color:#ef4444;color:#ef4444;filter:brightness(.6);}
+.ans-btn:disabled{cursor:default;pointer-events:none;}
+
+/* FEEDBACK */
+.game-feedback{width:100%;max-width:700px;border-radius:4px;padding:1rem;margin-bottom:.8rem;display:none;border-left:4px solid;}
+.game-feedback.show{display:block;animation:feedSlide .2s ease;}
+@keyframes feedSlide{from{transform:translateX(-10px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.gf-correct{background:#052e16;border-color:#4ade80;}
+.gf-wrong{background:#450a0a;border-color:#ef4444;}
+.gf-title{font-family:'Press Start 2P',monospace;font-size:11px;margin-bottom:.4rem;}
+.gf-correct .gf-title{color:#4ade80;}
+.gf-wrong .gf-title{color:#ef4444;}
+.gf-body{font-size:13px;color:#cbd5e1;line-height:1.6;}
+.gf-law{font-size:11px;color:#475569;margin-top:.3rem;font-style:italic;}
+.btn-continue{font-family:'Press Start 2P',monospace;background:#8338ec;color:#fff;border:2px solid #a78bfa;padding:10px 24px;font-size:10px;cursor:pointer;margin-top:.8rem;display:none;box-shadow:3px 3px 0 #4c1d95;}
+.btn-continue.show{display:inline-block;}
+.btn-continue:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #4c1d95;}
+
+/* GAME OVER */
+#game-over{text-align:center;}
+.go-title{font-family:'Press Start 2P',monospace;font-size:28px;color:#ef4444;text-shadow:3px 3px #991b1b;margin-bottom:1rem;animation:goShake .5s ease-in-out infinite;}
+@keyframes goShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
+.go-score{font-family:'Press Start 2P',monospace;font-size:16px;color:#fbbf24;margin-bottom:2rem;}
+.btn-retry{font-family:'Press Start 2P',monospace;background:#ef4444;color:#fff;border:3px solid #fca5a5;padding:12px 28px;font-size:11px;cursor:pointer;box-shadow:4px 4px 0 #991b1b;margin:.5rem;}
+.btn-retry:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #991b1b;}
+
+/* WIN */
+#win-screen{text-align:center;}
+.win-title{font-family:'Press Start 2P',monospace;font-size:22px;color:#fbbf24;text-shadow:3px 3px #d97706;margin-bottom:.5rem;}
+.win-score-big{font-family:'Press Start 2P',monospace;font-size:36px;color:#4ade80;margin-bottom:.3rem;text-shadow:3px 3px #166534;}
+.win-label{font-family:'Press Start 2P',monospace;font-size:10px;color:#94a3b8;margin-bottom:1.5rem;}
+.trophy{font-size:72px;animation:trophySpin 2s ease-in-out infinite;margin-bottom:1rem;}
+@keyframes trophySpin{0%,100%{transform:scale(1) rotate(-5deg);}50%{transform:scale(1.1) rotate(5deg);}}
+
+/* OVERLAYS */
+.cf{position:fixed;top:-20px;animation:cfall linear forwards;pointer-events:none;z-index:9999;border-radius:2px;}
+@keyframes cfall{to{transform:translateY(110vh) rotate(540deg);opacity:0;}}
+.damage-ov{position:fixed;inset:0;border:8px solid #ef4444;pointer-events:none;z-index:9990;opacity:0;transition:opacity .1s;animation:none;}
+.damage-ov.hit{opacity:1;animation:damageFlash .3s ease forwards;}
+@keyframes damageFlash{0%{opacity:1;}100%{opacity:0;}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="pixel-star" style="width: 2px; height: 2px; top: 26.6639vh; left: 24.4726vw; animation-duration: 1.12024s; animation-delay: 0.835085s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 82.1242vh; left: 44.456vw; animation-duration: 1.1694s; animation-delay: 1.85408s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 64.2175vh; left: 44.0915vw; animation-duration: 1.43673s; animation-delay: 0.529694s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 17.3663vh; left: 13.113vw; animation-duration: 2.98127s; animation-delay: 1.12921s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 63.6247vh; left: 90.5002vw; animation-duration: 2.0434s; animation-delay: 1.28492s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 20.4939vh; left: 45.8101vw; animation-duration: 2.9957s; animation-delay: 0.222536s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 26.8662vh; left: 62.3287vw; animation-duration: 2.59256s; animation-delay: 1.0536s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 2.73399vh; left: 70.9856vw; animation-duration: 2.01972s; animation-delay: 0.128314s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 21.673vh; left: 12.66vw; animation-duration: 1.7599s; animation-delay: 1.82524s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 85.1824vh; left: 54.7635vw; animation-duration: 1.09517s; animation-delay: 1.00396s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 24.5697vh; left: 85.7672vw; animation-duration: 2.88603s; animation-delay: 1.51298s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 82.3808vh; left: 88.0298vw; animation-duration: 1.09868s; animation-delay: 0.0174309s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 62.947vh; left: 93.107vw; animation-duration: 1.65153s; animation-delay: 1.69425s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 93.7574vh; left: 5.60058vw; animation-duration: 1.82468s; animation-delay: 0.841116s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 91.8024vh; left: 58.0598vw; animation-duration: 2.92523s; animation-delay: 0.0759908s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 72.1657vh; left: 45.0102vw; animation-duration: 1.44007s; animation-delay: 0.628333s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 7.90459vh; left: 30.8798vw; animation-duration: 2.9103s; animation-delay: 1.11723s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 74.9192vh; left: 43.2095vw; animation-duration: 1.67877s; animation-delay: 0.0455747s;"></div><div class="pixel-star" style="width: 2px; height: 2px; top: 70.5957vh; left: 38.9882vw; animation-duration: 2.82119s; animation-delay: 1.14853s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 24.5759vh; left: 4.38176vw; animation-duration: 2.48242s; animation-delay: 0.784875s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 8.79816vh; left: 39.4658vw; animation-duration: 1.60819s; animation-delay: 0.197732s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 76.2434vh; left: 58.3175vw; animation-duration: 1.11848s; animation-delay: 1.31804s;"></div><div class="pixel-star" style="width: 2px; height: 2px; top: 71.6052vh; left: 98.9232vw; animation-duration: 1.65266s; animation-delay: 0.38613s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 57.4456vh; left: 57.2577vw; animation-duration: 2.1756s; animation-delay: 0.863883s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 88.4729vh; left: 38.9038vw; animation-duration: 2.57066s; animation-delay: 0.657474s;"></div><div class="pixel-star" style="width: 2px; height: 2px; top: 3.33791vh; left: 5.43166vw; animation-duration: 2.98055s; animation-delay: 1.77245s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 91.2839vh; left: 82.3047vw; animation-duration: 2.12176s; animation-delay: 1.32624s;"></div><div class="pixel-star" style="width: 2px; height: 2px; top: 55.5687vh; left: 85.0804vw; animation-duration: 2.30815s; animation-delay: 0.21232s;"></div><div class="pixel-star" style="width: 2px; height: 2px; top: 44.9028vh; left: 36.7298vw; animation-duration: 2.98015s; animation-delay: 0.721659s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 48.1882vh; left: 0.990167vw; animation-duration: 1.22538s; animation-delay: 1.09041s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 38.1962vh; left: 67.6149vw; animation-duration: 2.47618s; animation-delay: 1.04882s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 40.2458vh; left: 93.2971vw; animation-duration: 1.28249s; animation-delay: 0.805989s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 61.6404vh; left: 3.16874vw; animation-duration: 2.37008s; animation-delay: 1.51929s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 57.2893vh; left: 66.1171vw; animation-duration: 2.82741s; animation-delay: 0.407588s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 86.9884vh; left: 76.2036vw; animation-duration: 1.99066s; animation-delay: 0.687391s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 95.6651vh; left: 87.8572vw; animation-duration: 2.73305s; animation-delay: 0.0929118s;"></div><div class="pixel-star" style="width: 2px; height: 2px; top: 36.9431vh; left: 35.0874vw; animation-duration: 2.36098s; animation-delay: 1.81962s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 68.4729vh; left: 69.5921vw; animation-duration: 2.41575s; animation-delay: 1.49517s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 30.4488vh; left: 12.0636vw; animation-duration: 1.68554s; animation-delay: 1.38219s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 15.5517vh; left: 76.4163vw; animation-duration: 1.57733s; animation-delay: 0.49421s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 78.6345vh; left: 98.8849vw; animation-duration: 1.05546s; animation-delay: 0.276144s;"></div><div class="pixel-star" style="width: 2px; height: 2px; top: 88.8482vh; left: 4.8183vw; animation-duration: 1.74961s; animation-delay: 0.642945s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 28.102vh; left: 4.50627vw; animation-duration: 1.56451s; animation-delay: 1.53542s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 39.8868vh; left: 57.2501vw; animation-duration: 2.6858s; animation-delay: 0.904083s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 45.0997vh; left: 13.8477vw; animation-duration: 1.40451s; animation-delay: 0.444715s;"></div><div class="pixel-star" style="width: 2px; height: 2px; top: 5.56453vh; left: 70.002vw; animation-duration: 2.8304s; animation-delay: 0.936865s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 71.9082vh; left: 80.795vw; animation-duration: 2.01796s; animation-delay: 1.86517s;"></div><div class="pixel-star" style="width: 2px; height: 2px; top: 30.0523vh; left: 19.2163vw; animation-duration: 2.55437s; animation-delay: 0.346553s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 96.9004vh; left: 64.3406vw; animation-duration: 2.80985s; animation-delay: 0.970913s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 33.6937vh; left: 60.0131vw; animation-duration: 2.83869s; animation-delay: 1.82587s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 52.111vh; left: 98.4171vw; animation-duration: 1.10378s; animation-delay: 1.01612s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 60.0869vh; left: 9.65149vw; animation-duration: 2.44133s; animation-delay: 1.60163s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 63.9927vh; left: 84.0798vw; animation-duration: 2.36468s; animation-delay: 0.29018s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 55.5028vh; left: 80.1647vw; animation-duration: 1.04074s; animation-delay: 0.659156s;"></div><div class="pixel-star" style="width: 2px; height: 2px; top: 84.0091vh; left: 47.1721vw; animation-duration: 1.52266s; animation-delay: 1.48736s;"></div><div class="pixel-star" style="width: 3px; height: 3px; top: 95.3458vh; left: 98.987vw; animation-duration: 1.73114s; animation-delay: 0.239758s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 93.0064vh; left: 9.96012vw; animation-duration: 2.43593s; animation-delay: 0.00292723s;"></div><div class="pixel-star" style="width: 1px; height: 1px; top: 33.2794vh; left: 3.69337vw; animation-duration: 1.72158s; animation-delay: 0.179512s;"></div><div class="pixel-star" style="width: 2px; height: 2px; top: 17.8535vh; left: 15.6516vw; animation-duration: 1.66807s; animation-delay: 1.74347s;"></div><div class="pixel-star" style="width: 2px; height: 2px; top: 81.5807vh; left: 76.1856vw; animation-duration: 2.99791s; animation-delay: 1.87714s;"></div></div>
+<div class="scanline"></div>
+<div class="damage-ov" id="dmg-ov"></div>
+
+<!-- TITLE -->
+<div class="screen active" id="title">
+  <div class="sprite">🦸</div>
+  <div class="game-title">RH QUEST</div>
+  <div class="game-title-2">La Période d'Essai</div>
+  <div class="title-info">Tu es un chef de cuisine qui doit maîtriser les règles de la période d'essai pour protéger son établissement. Bonne chance, héros ! ⚔️</div>
+  <div class="title-stats">
+    <div class="stat-box"><span class="stat-val">❤️ 3</span><span class="stat-lbl">VIES</span></div>
+    <div class="stat-box"><span class="stat-val">⚔️ 8</span><span class="stat-lbl">NIVEAUX</span></div>
+    <div class="stat-box"><span class="stat-val">⭐ ???</span><span class="stat-lbl">SCORE MAX</span></div>
+  </div>
+  <button class="btn-start-game blink" onclick="startGame()">▶ APPUYER POUR JOUER</button>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="game">
+  <div class="hud">
+    <div class="hud-lives" id="hud-lives">❤️❤️❤️</div>
+    <div class="hud-score" id="hud-score">SCORE: 0</div>
+    <div class="hud-level" id="hud-level">LVL 1</div>
+  </div>
+
+  <div class="level-banner">
+    <div class="level-title" id="lvl-title">NIVEAU 1 — LE TUTORIEL</div>
+    <div class="level-enemy" id="lvl-enemy">👾</div>
+  </div>
+
+  <div class="timer-wrap">
+    <div class="timer-label">TIME ▸ <span id="timer-txt">20</span></div>
+    <div class="timer-bar"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-level-tag" id="q-lvl-tag">STAGE 1-1</div>
+    <div class="q-text" id="q-text">...</div>
+    <div class="q-ctx" id="q-ctx"></div>
+  </div>
+
+  <div class="answers" id="answers"></div>
+
+  <div class="game-feedback" id="gfb">
+    <div class="gf-title" id="gfb-title"></div>
+    <div class="gf-body" id="gfb-body"></div>
+    <div class="gf-law" id="gfb-law"></div>
+    <button class="btn-continue" id="btn-cont" onclick="nextLevel()"></button>
+  </div>
+</div>
+
+<!-- GAME OVER -->
+<div class="screen" id="game-over">
+  <div class="go-title">GAME OVER</div>
+  <div style="font-size:48px;margin-bottom:1rem;">💀</div>
+  <div class="go-score" id="go-score">SCORE FINAL: 0</div>
+  <button class="btn-retry" onclick="startGame()">▶ RETRY</button>
+  <button class="btn-retry" style="background:#8338ec;border-color:#a78bfa;box-shadow:4px 4px 0 #4c1d95;" onclick="goTitle()">⬅ TITLE</button>
+</div>
+
+<!-- WIN -->
+<div class="screen" id="win-screen">
+  <div class="trophy">🏆</div>
+  <div class="win-title">YOU WIN !</div>
+  <div class="win-score-big" id="win-score">0</div>
+  <div class="win-label">POINTS</div>
+  <div style="font-size:13px;color:#94a3b8;max-width:400px;text-align:center;margin-bottom:1.5rem;line-height:1.7;" id="win-msg"></div>
+  <button class="btn-start-game" onclick="startGame()">▶ PLAY AGAIN</button>
+</div>
+
+<script>
+const LEVELS = [
+  {title:'LE TUTORIEL',enemy:'👾',
+   q:'À quoi sert la période d\'essai pour l\'employeur ?',ctx:'',time:20,
+   opts:['Evaluer les compétences du salarié','Prolonger le recrutement','Tester sans payer le salarié','Remplacer le contrat de travail'],
+   ans:0, expl:'La PE permet à l\'employeur d\'évaluer les compétences du salarié dans son travail, et au salarié d\'apprécier si le poste lui convient.',loi:'Art. L.1221-20 C. trav.'},
+  {title:'LE DONJON DES CDI',enemy:'🧟',
+   q:'Quelle est la durée maximale de la période d\'essai pour un cadre en CDI ?',ctx:'Convention collective HCR',time:20,
+   opts:['1 mois','2 mois','3 mois','4 mois'],
+   ans:3, expl:'Pour un cadre, la PE peut aller jusqu\'à 4 mois en CDI. Elle varie selon la convention collective et la classification du poste.',loi:'Art. L.1221-19 C. trav.'},
+  {title:'LA CAVERNE DES CONTRATS',enemy:'🐉',
+   q:'Une PE non mentionnée dans le contrat CDI, ça signifie quoi ?',ctx:'Le chef signe un CDI sans clause de PE.',time:20,
+   opts:['PE de droit commun de 2 mois','Pas de période d\'essai du tout','PE de 1 mois automatique','Le contrat est nul'],
+   ans:1, expl:'Sans mention explicite dans le contrat, il n\'y a PAS de période d\'essai. L\'employeur ne peut pas la revendiquer après coup.',loi:'Art. L.1221-23 C. trav.'},
+  {title:'LE CHÂTEAU DE LA RUPTURE',enemy:'💀',
+   q:'Pour rompre une PE de CDI côté employeur, quel délai de prévenance faut-il ?',ctx:'Le salarié est là depuis 3 semaines.',time:20,
+   opts:['Aucun délai requis','24 heures','48 heures','1 semaine'],
+   ans:1, expl:'Pour une PE < 8 jours, aucun délai. Entre 8 jours et 1 mois : 24h de prévenance. Entre 1 et 3 mois : 48h. Plus de 3 mois : 2 semaines.',loi:'Art. L.1221-25 C. trav.'},
+  {title:'LA TOUR DES PIÈGES',enemy:'🧛',
+   q:'Peut-on renouveler une période d\'essai en CDI ?',ctx:'',time:20,
+   opts:['Oui, toujours','Non, jamais','Oui, si accord de branche + accord du salarié','Oui, automatiquement'],
+   ans:2, expl:'La PE peut être renouvelée UNE seule fois si un accord de branche le prévoit ET avec l\'accord exprès du salarié.',loi:'Art. L.1221-21 C. trav.'},
+  {title:'LE MARAIS DES CDD',enemy:'🐊',
+   q:'Quelle est la durée de la PE pour un CDD de 6 mois ?',ctx:'',time:20,
+   opts:['1 semaine','2 semaines','1 mois','2 mois'],
+   ans:2, expl:'Pour un CDD de 6 mois à 2 ans, la PE est d\'1 mois maximum. Pour un CDD < 6 mois : 1 jour par semaine travaillée.',loi:'Art. L.1242-10 C. trav.'},
+  {title:'LA FORÊT INTERDITE',enemy:'🐺',
+   q:'Quand doit-on envoyer la demande de fin de PE à la RH ?',ctx:'Le chef veut mettre fin à la PE d\'un salarié.',time:20,
+   opts:['Le dernier jour de la PE','Avant la fin du délai de prévenance','Après avoir informé le salarié','Pas besoin, c\'est libre'],
+   ans:1, expl:'Il faut envoyer la demande à la RH AVANT la fin du délai de prévenance pour que la procédure soit respectée. Un courrier sera adressé au salarié.',loi:'Procédure interne Compass Group'},
+  {title:'LE BOSS FINAL',enemy:'💥',
+   q:'La PE est-elle automatiquement suspendue pendant un arrêt maladie ?',ctx:'',time:20,
+   opts:['Non, elle continue à courir','Oui, elle est suspendue','Ça dépend de la durée','Seulement pour les CDI'],
+   ans:1, expl:'La PE est suspendue pendant la maladie. Les jours d\'absence ne comptent pas dans la durée de la PE. Elle reprend à la reprise du travail.',loi:'Jurisprudence constante C. cass.'},
+];
+
+let currentLevel=0, lives=3, score=0, tLeft=20, tInt=null, answered=false;
+
+const AC=new(window.AudioContext||window.webkitAudioContext)();
+function rAC(){try{AC.resume();}catch(e){}}
+
+// Pixel stars
+const bg=document.querySelector('.bg');
+for(let i=0;i<60;i++){
+  const s=document.createElement('div');s.className='pixel-star';
+  const sz=Math.random()>.7?3:Math.random()>.5?2:1;
+  s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}vh;left:${Math.random()*100}vw;animation-duration:${1+Math.random()*2}s;animation-delay:${Math.random()*2}s;`;
+  bg.appendChild(s);
+}
+
+function beep(type){
+  rAC();
+  try{
+    if(type==='coin'){
+      [784,1047].forEach((f,i)=>setTimeout(()=>{const o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=f;g.gain.setValueAtTime(.1,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.1);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.1);},i*80));
+    } else if(type==='wrong'){
+      [200,180,150].forEach((f,i)=>setTimeout(()=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sawtooth';o.frequency.value=f;g.gain.setValueAtTime(.12,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.15);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.15);},i*80));
+    } else if(type==='gameover'){
+      [440,415,392,349].forEach((f,i)=>setTimeout(()=>{const o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=f;g.gain.setValueAtTime(.1,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.3);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.3);},i*150));
+    } else if(type==='win'){
+      [523,659,784,1047,784,1047,1319].forEach((f,i)=>setTimeout(()=>{const o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=f;g.gain.setValueAtTime(.08,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.2);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.2);},i*100));
+    } else if(type==='tick'){
+      const o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=440;g.gain.setValueAtTime(.04,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.05);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.05);
+    }
+  }catch(e){}
+}
+
+function confetti(n=50){
+  const cl=['#a78bfa','#60a5fa','#4ade80','#fbbf24','#f472b6','#fff'];
+  for(let i=0;i<n;i++){const el=document.createElement('div');el.className='cf';el.style.cssText=`left:${Math.random()*100}vw;background:${cl[i%cl.length]};width:${6+Math.random()*6}px;height:${5+Math.random()*5}px;border-radius:${Math.random()>.5?'50%':'0'};animation-duration:${1.3+Math.random()*1.5}s;animation-delay:${Math.random()*.4}s;`;document.body.appendChild(el);setTimeout(()=>el.remove(),3200);}
+}
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goTitle(){show('title');}
+
+function renderLives(){
+  document.getElementById('hud-lives').textContent='❤️'.repeat(lives)+'🖤'.repeat(Math.max(0,3-lives));
+}
+
+function startGame(){
+  rAC(); currentLevel=0; lives=3; score=0;
+  renderLives();
+  show('game');
+  loadLevel();
+}
+
+function loadLevel(){
+  answered=false; tLeft=20;
+  clearInterval(tInt);
+  const lv=LEVELS[currentLevel];
+  document.getElementById('hud-score').textContent=`SCORE: ${score}`;
+  document.getElementById('hud-level').textContent=`LVL ${currentLevel+1}`;
+  document.getElementById('lvl-title').textContent=`NIVEAU ${currentLevel+1} — ${lv.title}`;
+  document.getElementById('lvl-enemy').textContent=lv.enemy;
+  document.getElementById('q-lvl-tag').textContent=`STAGE ${currentLevel+1}-1 ■■■■■■■■`;
+  document.getElementById('q-text').textContent=lv.q;
+  document.getElementById('q-ctx').textContent=lv.ctx||'';
+  document.getElementById('gfb').className='game-feedback';
+  document.getElementById('btn-cont').className='btn-continue';
+  updateTimer(1);
+  document.getElementById('timer-txt').textContent=tLeft;
+
+  const keys=['A','B','C','D'];
+  const an=document.getElementById('answers');
+  an.innerHTML='';
+  lv.opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='ans-btn';
+    btn.innerHTML=`<div class="ans-key">${keys[i]}</div><span>${opt}</span>`;
+    btn.onclick=()=>pick(i);
+    an.appendChild(btn);
+  });
+
+  tInt=setInterval(()=>{
+    tLeft-=0.1;
+    updateTimer(tLeft/lv.time);
+    document.getElementById('timer-txt').textContent=Math.max(0,Math.ceil(tLeft));
+    if(tLeft<=5&&tLeft>0) beep('tick');
+    if(tLeft<=0){clearInterval(tInt);if(!answered)timeout();}
+  },100);
+}
+
+function updateTimer(pct){
+  const fill=document.getElementById('timer-fill');
+  fill.style.width=`${Math.max(0,pct*100)}%`;
+  fill.className='timer-fill'+(pct<.25?' danger':pct<.5?' warn':'');
+}
+
+function timeout(){pick(-1);}
+
+function pick(idx){
+  if(answered)return;
+  answered=true; clearInterval(tInt);
+  const lv=LEVELS[currentLevel];
+  const correct=idx===lv.ans;
+  const btns=document.querySelectorAll('.ans-btn');
+  btns.forEach(b=>b.disabled=true);
+  if(idx>=0) btns[idx].classList.add(correct?'correct':'wrong');
+  btns[lv.ans].classList.add('correct');
+
+  const pts=correct?Math.round(1000+(tLeft/lv.time)*500):0;
+  if(correct){score+=pts;beep('coin');confetti(25);}
+  else{
+    lives--;renderLives();beep('wrong');
+    const dmg=document.getElementById('dmg-ov');
+    dmg.classList.add('hit');setTimeout(()=>dmg.classList.remove('hit'),400);
+  }
+
+  document.getElementById('hud-score').textContent=`SCORE: ${score}`;
+
+  const gfb=document.getElementById('gfb');
+  gfb.className=`game-feedback show ${correct?'gf-correct':'gf-wrong'}`;
+  document.getElementById('gfb-title').textContent=correct?`✅ +${pts} PTS ! LEVEL UP !`:'❌ LIFE LOST !';
+  document.getElementById('gfb-body').textContent=lv.expl;
+  document.getElementById('gfb-law').textContent=lv.loi;
+
+  const btn=document.getElementById('btn-cont');
+  if(lives<=0){btn.textContent='💀 GAME OVER...';btn.className='btn-continue show';btn.onclick=()=>gameOver();}
+  else if(currentLevel>=LEVELS.length-1){btn.textContent='🏆 BOSS VAINCU !';btn.className='btn-continue show';btn.onclick=()=>winGame();}
+  else{btn.textContent=`▶ NIVEAU ${currentLevel+2}`;btn.className='btn-continue show';btn.onclick=()=>nextLevel();}
+}
+
+function nextLevel(){currentLevel++;loadLevel();}
+
+function gameOver(){
+  beep('gameover');
+  document.getElementById('go-score').textContent=`SCORE FINAL: ${score}`;
+  show('game-over');
+}
+
+function winGame(){
+  beep('win');confetti(100);
+  document.getElementById('win-score').textContent=score;
+  const stars=score>7000?'⭐⭐⭐':score>4000?'⭐⭐':'⭐';
+  document.getElementById('win-msg').textContent=`${stars} Tu maîtrises la période d'essai comme un pro ! Score : ${score} pts sur ${LEVELS.length*1500} possibles.`;
+  show('win-screen');
+}
+</script>
+
+
+</body></html>

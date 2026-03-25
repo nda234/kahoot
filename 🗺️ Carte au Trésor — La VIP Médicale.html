@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<!-- saved from url=(0062)file:///C:/Users/0189334/Downloads/carte_tresor_vip%20(1).html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🗺️ Carte au Trésor — La VIP Médicale</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Montserrat',Arial,sans-serif;background:#1a0a00;min-height:100vh;overflow-x:hidden;}
+
+/* JUNGLE BG */
+.bg{position:fixed;inset:0;background:radial-gradient(ellipse at 20% 80%,#2d1b00 0%,#1a0a00 50%,#0a1628 100%);z-index:0;}
+.tree{position:fixed;bottom:0;font-size:80px;opacity:.15;z-index:0;}
+
+/* SCREENS */
+.screen{display:none;position:relative;z-index:1;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;}
+
+/* ── INTRO ── */
+#intro{text-align:center;}
+.intro-map{font-size:80px;margin-bottom:1rem;animation:mapFloat 3s ease-in-out infinite;}
+@keyframes mapFloat{0%,100%{transform:translateY(0) rotate(-3deg);}50%{transform:translateY(-15px) rotate(3deg);}}
+.intro-title{font-size:36px;font-weight:900;color:#fbbf24;text-shadow:0 0 30px rgba(251,191,36,.5);margin-bottom:.5rem;}
+.intro-sub{font-size:14px;color:#d97706;margin-bottom:.5rem;}
+.intro-desc{font-size:13px;color:#92400e;max-width:460px;line-height:1.7;margin:0 auto 2rem;}
+.intro-rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:460px;margin:0 auto 2rem;}
+.rule-box{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:12px;padding:.9rem;text-align:center;}
+.rule-icon{font-size:24px;margin-bottom:4px;}
+.rule-txt{font-size:11px;color:#fbbf24;font-weight:700;line-height:1.4;}
+.btn-big{background:linear-gradient(135deg,#d97706,#92400e);color:#fff;border:none;border-radius:50px;padding:16px 48px;font-size:18px;font-weight:900;cursor:pointer;box-shadow:0 8px 30px rgba(217,119,6,.5);transition:transform .15s;letter-spacing:.5px;}
+.btn-big:hover{transform:translateY(-3px);}
+.btn-big:active{transform:scale(.97);}
+
+/* ── MAP ── */
+#map-screen{padding:1rem;}
+.map-header{width:100%;max-width:700px;display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.map-title{font-size:18px;font-weight:900;color:#fbbf24;}
+.map-progress{font-size:12px;color:#d97706;}
+.progress-bar{width:100%;max-width:700px;height:8px;background:rgba(255,255,255,.1);border-radius:4px;margin-bottom:1.2rem;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#d97706,#fbbf24);border-radius:4px;transition:width .5s;}
+
+/* MAP VISUAL */
+.map-visual{width:100%;max-width:700px;background:linear-gradient(135deg,#2d1b00,#1a0a00);border:2px solid #d97706;border-radius:20px;padding:1.5rem;margin-bottom:1.2rem;position:relative;overflow:hidden;}
+.map-visual::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d97706' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+
+.clue-number{font-size:11px;font-weight:700;color:#d97706;letter-spacing:.1em;margin-bottom:.5rem;}
+.clue-emoji{font-size:48px;margin-bottom:.8rem;display:block;text-align:center;animation:clueFloat 2s ease-in-out infinite;}
+@keyframes clueFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.clue-text{font-size:16px;font-weight:700;color:#fff;text-align:center;line-height:1.6;margin-bottom:1rem;}
+.clue-hint{font-size:12px;color:#92400e;text-align:center;font-style:italic;}
+
+/* CHOICES */
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:700px;margin-bottom:1rem;}
+.choice-btn{background:linear-gradient(135deg,rgba(217,119,6,.15),rgba(146,64,14,.15));border:1.5px solid rgba(217,119,6,.4);border-radius:14px;padding:1rem;cursor:pointer;color:#fbbf24;font-size:14px;font-weight:700;font-family:'Montserrat',Arial,sans-serif;transition:all .15s;text-align:left;display:flex;align-items:center;gap:10px;}
+.choice-btn:hover{background:linear-gradient(135deg,rgba(217,119,6,.3),rgba(146,64,14,.3));border-color:#fbbf24;transform:translateY(-2px);}
+.choice-btn:active{transform:scale(.97);}
+.choice-btn.correct{background:linear-gradient(135deg,rgba(34,197,94,.2),rgba(21,128,61,.2));border-color:#4ade80;color:#4ade80;}
+.choice-btn.wrong{background:linear-gradient(135deg,rgba(239,68,68,.2),rgba(185,28,28,.2));border-color:#f87171;color:#f87171;filter:brightness(.6);}
+.choice-btn:disabled{cursor:default;pointer-events:none;}
+.choice-letter{width:28px;height:28px;border-radius:50%;background:rgba(217,119,6,.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;}
+
+/* FEEDBACK BANNER */
+.feedback-banner{width:100%;max-width:700px;border-radius:14px;padding:1rem 1.2rem;margin-bottom:1rem;display:none;animation:slideIn .3s ease;}
+@keyframes slideIn{from{transform:translateY(10px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.feedback-banner.show{display:block;}
+.fb-correct{background:linear-gradient(135deg,#052e16,#14532d);border:1px solid #4ade80;}
+.fb-wrong{background:linear-gradient(135deg,#450a0a,#7f1d1d);border:1px solid #f87171;}
+.fb-title{font-size:15px;font-weight:900;margin-bottom:.3rem;}
+.fb-correct .fb-title{color:#4ade80;}
+.fb-wrong .fb-title{color:#f87171;}
+.fb-body{font-size:13px;color:#cbd5e1;line-height:1.6;}
+.fb-law{font-size:11px;color:#475569;margin-top:.3rem;font-style:italic;}
+.btn-next{background:linear-gradient(135deg,#d97706,#92400e);color:#fff;border:none;border-radius:50px;padding:12px 36px;font-size:14px;font-weight:900;cursor:pointer;margin-top:.8rem;display:none;}
+.btn-next.show{display:inline-block;}
+
+/* ── TREASURE ── */
+#treasure{text-align:center;}
+.treasure-chest{font-size:100px;animation:chestBounce 1s ease-in-out infinite;margin-bottom:1rem;}
+@keyframes chestBounce{0%,100%{transform:scale(1) rotate(-3deg);}50%{transform:scale(1.1) rotate(3deg);}}
+.treasure-title{font-size:32px;font-weight:900;color:#fbbf24;text-shadow:0 0 40px rgba(251,191,36,.6);margin-bottom:.5rem;}
+.treasure-score{font-size:52px;font-weight:900;color:#fff;margin-bottom:.3rem;}
+.treasure-lbl{font-size:14px;color:#d97706;margin-bottom:1.5rem;}
+.treasure-summary{width:100%;max-width:500px;display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem;}
+.ts-row{display:flex;align-items:center;gap:10px;padding:.6rem 1rem;border-radius:10px;}
+.ts-ok{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);}
+.ts-ko{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);}
+.ts-icon{font-size:16px;}
+.ts-text{font-size:13px;color:#e2e8f0;flex:1;}
+.ts-ans{font-size:11px;color:#94a3b8;}
+
+/* OVERLAYS */
+.cf{position:fixed;top:-20px;animation:cfall linear forwards;pointer-events:none;z-index:9999;border-radius:2px;}
+@keyframes cfall{to{transform:translateY(110vh) rotate(540deg);opacity:0;}}
+.correct-flash{position:fixed;inset:0;background:rgba(34,197,94,.15);pointer-events:none;z-index:9990;opacity:0;transition:opacity .1s;}
+.wrong-flash{position:fixed;inset:0;background:rgba(239,68,68,.15);pointer-events:none;z-index:9990;opacity:0;transition:opacity .1s;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="correct-flash" id="correct-flash"></div>
+<div class="wrong-flash" id="wrong-flash"></div>
+
+<!-- INTRO -->
+<div class="screen active" id="intro">
+  <div class="intro-map">🗺️</div>
+  <div class="intro-title">Carte au Trésor</div>
+  <div class="intro-sub">🏥 La Visite d'Information et de Prévention (VIP)</div>
+  <div class="intro-desc">Suis les indices pour trouver le trésor ! Chaque bonne réponse te rapproche du coffre. Attention aux pièges — une seule erreur et tu repars en arrière !</div>
+  <div class="intro-rules">
+    <div class="rule-box"><div class="rule-icon">🔍</div><div class="rule-txt">6 indices à trouver</div></div>
+    <div class="rule-box"><div class="rule-icon">⚡</div><div class="rule-txt">Réponse immédiate</div></div>
+    <div class="rule-box"><div class="rule-icon">💰</div><div class="rule-txt">Points doublés en groupe</div></div>
+  </div>
+  <button class="btn-big" onclick="startHunt()">🗺️ Partir à l'aventure !</button>
+</div>
+
+<!-- MAP -->
+<div class="screen" id="map-screen">
+  <div class="map-header">
+    <div class="map-title">🗺️ Indice <span id="clue-num">1</span>/6</div>
+    <div class="map-progress" id="score-display">⭐ 0 pts</div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+
+  <div class="map-visual">
+    <div class="clue-number" id="clue-number">INDICE 1 — DESTINATION : LE MARAIS</div>
+    <span class="clue-emoji" id="clue-emoji">🏥</span>
+    <div class="clue-text" id="clue-text">...</div>
+    <div class="clue-hint" id="clue-hint"></div>
+  </div>
+
+  <div class="choices" id="choices"></div>
+
+  <div class="feedback-banner" id="fb-banner">
+    <div class="fb-title" id="fb-title"></div>
+    <div class="fb-body" id="fb-body"></div>
+    <div class="fb-law" id="fb-law"></div>
+    <button class="btn-next" id="btn-next" onclick="nextClue()"></button>
+  </div>
+</div>
+
+<!-- TREASURE -->
+<div class="screen" id="treasure">
+  <div class="treasure-chest">🏆</div>
+  <div class="treasure-title">TRÉSOR TROUVÉ !</div>
+  <div class="treasure-score" id="t-score">0</div>
+  <div class="treasure-lbl">points récoltés</div>
+  <div class="treasure-summary" id="t-summary"></div>
+  <button class="btn-big" onclick="restart()" style="font-size:15px;padding:13px 36px;">🔄 Nouvelle aventure</button>
+</div>
+
+<script>
+const CLUES = [
+  {
+    emoji:'🏥', location:'LA CLINIQUE DU TRAVAIL',
+    text:'Tu arrives devant la clinique. Le garde te pose une question : "Dans quel délai maximum après l\'embauche doit avoir lieu la première VIP ?"',
+    hint:'Pense aux jours ouvrables…',
+    choices:['A — 1 mois','B — 3 mois','C — 6 mois','D — 1 an'],
+    ans:1,
+    expl:'La VIP doit avoir lieu dans les 3 mois maximum suivant la prise de poste.',
+    loi:'Art. R.4624-10 C. trav.'
+  },
+  {
+    emoji:'📋', location:'LA SALLE DES ARCHIVES',
+    text:'Une vieille carte est là ! Il manque une information. Pour un travailleur de nuit ou un mineur, quand doit avoir lieu la VIP ?',
+    hint:'C\'est encore plus strict que pour un salarié classique…',
+    choices:['A — Dans les 3 mois','B — Dans le mois qui suit','C — Avant la prise de poste','D — Dans la semaine'],
+    ans:2,
+    expl:'Pour les mineurs et les travailleurs de nuit, la VIP doit avoir lieu AVANT la prise de poste.',
+    loi:'Art. R.4624-10 C. trav. — cas particuliers'
+  },
+  {
+    emoji:'🔄', location:'LE PONT DU RENOUVELLEMENT',
+    text:'Tu traverses le pont. Un troll te bloque : "Tous les combien de temps la VIP est-elle renouvelée en règle générale ?"',
+    hint:'C\'est assez espacé…',
+    choices:['A — Tous les ans','B — Tous les 2 ans','C — Tous les 5 ans','D — Tous les 3 ans'],
+    ans:2,
+    expl:'La VIP est renouvelée dans un délai maximum de 5 ans pour un salarié classique.',
+    loi:'Art. R.4624-16 C. trav.'
+  },
+  {
+    emoji:'♿', location:'LA FORÊT DES CAS PARTICULIERS',
+    text:'Dans la forêt tu rencontres un salarié reconnu travailleur handicapé. Quel est son délai de renouvellement VIP ?',
+    hint:'Les cas particuliers ont des délais plus courts…',
+    choices:['A — 1 an','B — 2 ans','C — 3 ans','D — 5 ans'],
+    ans:2,
+    expl:'Pour les travailleurs handicapés, titulaires d\'une pension d\'invalidité ou travailleurs de nuit, le délai de renouvellement est réduit à 3 ans.',
+    loi:'Art. R.4624-16 C. trav.'
+  },
+  {
+    emoji:'💻', location:'LE KIOSQUE NUMÉRIQUE',
+    text:'Tu trouves un terminal. Il demande : "Où doit-on saisir la date et le résultat de la VIP ?"',
+    hint:'C\'est un outil interne à Compass…',
+    choices:['A — Dans le dossier papier RH','B — Par email à la RH','C — Dans le Kiosque RH','D — Dans le registre du personnel'],
+    ans:2,
+    expl:'Le résultat et la date de la VIP doivent être saisis dans le Kiosque RH. Le document original doit être conservé.',
+    loi:'Procédure interne Compass Group'
+  },
+  {
+    emoji:'🔑', location:'LA PORTE DU TRÉSOR',
+    text:'Dernière énigme ! Un salarié revient après un arrêt maladie de plus de 60 jours. Quelle visite médicale s\'impose ?',
+    hint:'Ce n\'est pas la VIP classique cette fois…',
+    choices:['A — Une VIP normale dans les 3 mois','B — Une visite de reprise obligatoire','C — Aucune visite requise','D — Une simple déclaration RH'],
+    ans:1,
+    expl:'Après un arrêt maladie ≥ 60 jours, une visite de REPRISE obligatoire s\'impose, distincte de la VIP classique.',
+    loi:'Art. R.4624-22 C. trav.'
+  },
+];
+
+let currentClue=0, score=0, results=[];
+
+const AC=new(window.AudioContext||window.webkitAudioContext)();
+function rAC(){try{AC.resume();}catch(e){}}
+
+function beep(type){
+  rAC();
+  try{
+    if(type==='correct'){
+      [523,659,784].forEach((f,i)=>setTimeout(()=>{
+        const o=AC.createOscillator(),g=AC.createGain();
+        o.frequency.value=f;o.type='triangle';
+        g.gain.setValueAtTime(0,AC.currentTime);
+        g.gain.linearRampToValueAtTime(.15,AC.currentTime+.03);
+        g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.35);
+        o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.35);
+      },i*80));
+    } else if(type==='wrong'){
+      [300,220,180].forEach((f,i)=>setTimeout(()=>{
+        const o=AC.createOscillator(),g=AC.createGain();
+        o.frequency.value=f;o.type='sawtooth';
+        g.gain.setValueAtTime(0,AC.currentTime);
+        g.gain.linearRampToValueAtTime(.1,AC.currentTime+.02);
+        g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.25);
+        o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.25);
+      },i*100));
+    } else if(type==='fanfare'){
+      const mel=[523,523,523,659,523,659,784,1047];
+      [0,120,240,360,600,750,900,1050].forEach((t,i)=>setTimeout(()=>{
+        const o=AC.createOscillator(),g=AC.createGain();
+        o.frequency.value=mel[i];o.type='square';
+        g.gain.setValueAtTime(0,AC.currentTime);
+        g.gain.linearRampToValueAtTime(.08,AC.currentTime+.02);
+        g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.25);
+        o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.25);
+      },t));
+    }
+  }catch(e){}
+}
+
+function confetti(n=50){
+  const cl=['#fbbf24','#4ade80','#60a5fa','#f472b6','#fb923c'];
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div');el.className='cf';
+    el.style.cssText=`left:${Math.random()*100}vw;background:${cl[i%cl.length]};width:${7+Math.random()*7}px;height:${5+Math.random()*6}px;border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.4+Math.random()*1.5}s;animation-delay:${Math.random()*.4}s;`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),3500);
+  }
+}
+
+function flash(type){
+  const el=document.getElementById(type+'-flash');
+  el.style.opacity='1';setTimeout(()=>el.style.opacity='0',300);
+}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startHunt(){
+  rAC();
+  currentClue=0; score=0; results=[];
+  show('map-screen');
+  loadClue();
+}
+
+function loadClue(){
+  const c=CLUES[currentClue];
+  document.getElementById('clue-num').textContent=currentClue+1;
+  document.getElementById('clue-number').textContent=`INDICE ${currentClue+1} — ${c.location}`;
+  document.getElementById('clue-emoji').textContent=c.emoji;
+  document.getElementById('clue-text').textContent=c.text;
+  document.getElementById('clue-hint').textContent='💡 Indice : '+c.hint;
+  document.getElementById('score-display').textContent=`⭐ ${score} pts`;
+  document.getElementById('prog-fill').style.width=`${(currentClue/CLUES.length)*100}%`;
+  document.getElementById('fb-banner').className='feedback-banner';
+  document.getElementById('btn-next').className='btn-next';
+
+  const ch=document.getElementById('choices');
+  ch.innerHTML='';
+  const letters=['A','B','C','D'];
+  c.choices.forEach((choice,i)=>{
+    const btn=document.createElement('button');
+    btn.className='choice-btn';
+    btn.innerHTML=`<div class="choice-letter">${letters[i]}</div><span>${choice.replace(/^[A-D] — /,'')}</span>`;
+    btn.onclick=()=>pick(i);
+    ch.appendChild(btn);
+  });
+}
+
+function pick(idx){
+  rAC();
+  const c=CLUES[currentClue];
+  const correct=idx===c.ans;
+  const btns=document.querySelectorAll('.choice-btn');
+  btns.forEach(b=>b.disabled=true);
+  btns[idx].classList.add(correct?'correct':'wrong');
+  if(!correct) btns[c.ans].classList.add('correct');
+
+  const pts=correct?Math.round(1000*(1-(currentClue*.05))):0;
+  if(correct){score+=pts; beep('correct'); flash('correct'); confetti(30);}
+  else{beep('wrong'); flash('wrong');}
+
+  results.push({clue:c,correct,pts});
+
+  const fb=document.getElementById('fb-banner');
+  fb.className=`feedback-banner show ${correct?'fb-correct':'fb-wrong'}`;
+  document.getElementById('fb-title').textContent=correct?`✅ Bravo ! +${pts} pts`:'❌ Raté… mais tu apprends !';
+  document.getElementById('fb-body').textContent=c.expl;
+  document.getElementById('fb-law').textContent=c.loi;
+  document.getElementById('score-display').textContent=`⭐ ${score} pts`;
+
+  const btn=document.getElementById('btn-next');
+  btn.textContent=currentClue<CLUES.length-1?'Indice suivant →':'Ouvrir le trésor ! 🏆';
+  btn.className='btn-next show';
+}
+
+function nextClue(){
+  currentClue++;
+  if(currentClue<CLUES.length){loadClue();}
+  else{showTreasure();}
+}
+
+function showTreasure(){
+  show('treasure');
+  document.getElementById('t-score').textContent=score;
+  beep('fanfare'); confetti(100);
+
+  const sum=document.getElementById('t-summary');
+  sum.innerHTML='';
+  results.forEach((r,i)=>{
+    const d=document.createElement('div');
+    d.className=`ts-row ${r.correct?'ts-ok':'ts-ko'}`;
+    d.innerHTML=`<span class="ts-icon">${r.correct?'✅':'❌'}</span>
+      <span class="ts-text">${r.clue.location}</span>
+      <span class="ts-ans">${r.correct?'+'+r.pts+' pts':'0 pt'}</span>`;
+    sum.appendChild(d);
+  });
+}
+
+function restart(){
+  currentClue=0;score=0;results=[];
+  show('intro');
+}
+</script>
+
+
+</body></html>
