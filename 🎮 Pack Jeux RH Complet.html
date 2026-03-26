@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<!-- saved from url=(0066)file:///C:/Users/0189334/Downloads/PACK_JEUX_RH_COMPLET%20(1).html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🎮 Pack Jeux RH Complet</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,'Helvetica Neue',sans-serif;background:#0f172a;color:#fff;overflow:hidden;height:100vh;}
+.screen{display:none;width:100vw;height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:1rem;}
+.screen.active{display:flex;}
+
+/* HUD */
+.hud{position:fixed;top:0;left:0;right:0;background:rgba(15,23,42,.97);border-bottom:1px solid rgba(255,255,255,.1);padding:.5rem 1.2rem;display:none;align-items:center;justify-content:space-between;z-index:200;height:56px;}
+.hud.on{display:flex;}
+.hud-teams{display:flex;gap:8px;}
+.ht{display:flex;align-items:center;gap:6px;padding:.3rem .8rem;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid;}
+.ht1{border-color:#3b82f6;background:rgba(59,130,246,.15);color:#93c5fd;}
+.ht2{border-color:#22c55e;background:rgba(34,197,94,.15);color:#86efac;}
+.ht3{border-color:#fbbf24;background:rgba(251,191,36,.15);color:#fcd34d;}
+.ht4{border-color:#ef4444;background:rgba(239,68,68,.15);color:#fca5a5;}
+.ht .sc{font-size:18px;font-weight:900;}
+.hud-right{display:flex;gap:6px;align-items:center;}
+.hbtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:8px;padding:.3rem .8rem;font-size:12px;cursor:pointer;font-family:Arial,sans-serif;}
+.hbtn:hover{background:rgba(255,255,255,.15);}
+
+/* MENU */
+#menu{background:linear-gradient(135deg,#1e1b4b,#0f172a);}
+.menu-title{font-size:36px;font-weight:900;color:#fff;text-align:center;margin-bottom:.3rem;}
+.menu-title span{color:#fbbf24;}
+.menu-sub{font-size:14px;color:#94a3b8;text-align:center;margin-bottom:1.5rem;}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:700px;margin-bottom:1.2rem;}
+.menu-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:1.2rem;cursor:pointer;transition:all .2s;text-align:center;}
+.menu-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.3);}
+.mc-icon{font-size:36px;margin-bottom:.5rem;}
+.mc-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:.3rem;}
+.mc-sub{font-size:12px;color:#64748b;}
+.teams-setup{background:rgba(255,255,255,.04);border-radius:14px;padding:1rem 1.2rem;width:100%;max-width:700px;margin-bottom:1rem;}
+.ts-title{font-size:12px;font-weight:700;color:#fbbf24;letter-spacing:.08em;margin-bottom:.8rem;}
+.ts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.ts-inp{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 10px;font-size:13px;color:#fff;font-family:Arial,sans-serif;outline:none;width:100%;text-align:center;}
+.ts-inp:focus{border-color:#fbbf24;}
+
+/* SLIDES */
+.slides-wrap{width:100%;max-width:900px;margin-top:56px;overflow-y:auto;max-height:calc(100vh - 56px);padding:1.5rem 1rem;}
+.slide{display:none;animation:sin .3s ease;}
+.slide.on{display:block;}
+@keyframes sin{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+
+/* TITRE SLIDE */
+.s-titre{text-align:center;padding:3rem 1rem;}
+.s-titre .big-icon{font-size:72px;margin-bottom:1rem;}
+.s-titre h1{font-size:48px;font-weight:900;color:#fff;margin-bottom:.5rem;}
+.s-titre h1 em{color:#fbbf24;font-style:normal;}
+.s-titre p{font-size:16px;color:#94a3b8;}
+
+/* REGLES SLIDE */
+.s-regles{padding:2rem 1rem;}
+.s-regles h2{font-size:26px;font-weight:900;color:#fbbf24;text-align:center;margin-bottom:1.5rem;}
+.regles-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:680px;margin:0 auto;}
+.rg-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:1.1rem;display:flex;align-items:center;gap:12px;}
+.rg-icon{font-size:28px;flex-shrink:0;}
+.rg-text{font-size:14px;color:#e2e8f0;line-height:1.5;}
+
+/* QUESTION SLIDE */
+.s-question{padding:1.5rem 1rem;}
+.q-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;}
+.q-badge{font-size:13px;font-weight:700;padding:.3rem 1rem;border-radius:20px;}
+.q-badge-blue{background:rgba(59,130,246,.2);color:#93c5fd;}
+.q-badge-green{background:rgba(34,197,94,.2);color:#86efac;}
+.q-badge-amber{background:rgba(251,191,36,.2);color:#fcd34d;}
+.q-badge-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+.q-badge-purple{background:rgba(167,139,250,.2);color:#c4b5fd;}
+.q-theme{font-size:12px;color:#64748b;}
+.q-text{font-size:24px;font-weight:800;color:#fff;text-align:center;line-height:1.4;margin-bottom:1.5rem;}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:780px;margin:0 auto;}
+.qo{border-radius:12px;padding:1rem 1.2rem;display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:#fff;}
+.qo-a{background:#e63946;} .qo-b{background:#2a9d8f;}
+.qo-c{background:#f4a261;} .qo-d{background:#8338ec;}
+.qo-letter{width:32px;height:32px;background:rgba(0,0,0,.2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;flex-shrink:0;}
+.timer-bar{width:100%;max-width:780px;margin:1.2rem auto 0;height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;}
+.timer-fill{height:100%;background:linear-gradient(90deg,#46e891,#fbbf24);transition:width .3s linear;}
+
+/* REPONSE SLIDE */
+.s-reponse{text-align:center;padding:2rem 1rem;}
+.rep-check{font-size:64px;margin-bottom:.8rem;}
+.rep-label{font-size:20px;font-weight:700;color:#46e891;margin-bottom:.5rem;}
+.rep-main{font-size:30px;font-weight:900;color:#fff;margin-bottom:.8rem;line-height:1.3;}
+.rep-expl{font-size:14px;color:#94a3b8;margin-bottom:.4rem;max-width:600px;margin-left:auto;margin-right:auto;line-height:1.6;}
+.rep-law{font-size:12px;color:#475569;font-style:italic;margin-bottom:1.2rem;}
+.rep-btns-label{font-size:12px;font-weight:700;color:#fbbf24;letter-spacing:.08em;margin-bottom:.6rem;}
+.rep-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:.5rem;}
+.rb{border:none;border-radius:30px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;transition:transform .1s;}
+.rb:hover{transform:scale(1.05);}
+.rb1{background:#3b82f6;color:#fff;}
+.rb2{background:#22c55e;color:#fff;}
+.rb3{background:#fbbf24;color:#000;}
+.rb4{background:#ef4444;color:#fff;}
+.steal-zone{margin-top:.5rem;padding:.6rem;background:rgba(251,191,36,.08);border-radius:10px;display:none;}
+.steal-label{font-size:11px;color:#fbbf24;margin-bottom:.4rem;}
+
+/* SCENARIO SLIDE */
+.s-scenario{padding:1.5rem 1rem;max-width:780px;margin:0 auto;width:100%;}
+.scenario-badge{display:inline-block;background:rgba(251,191,36,.15);color:#fcd34d;font-size:11px;font-weight:700;padding:.3rem 1rem;border-radius:20px;margin-bottom:1rem;}
+.scenario-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:1.4rem;margin-bottom:1.2rem;}
+.scenario-context{font-size:15px;color:#94a3b8;margin-bottom:.6rem;font-style:italic;line-height:1.6;}
+.scenario-question{font-size:22px;font-weight:800;color:#fff;margin-bottom:1.2rem;line-height:1.4;}
+.scenario-opts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.sopt{border-radius:12px;padding:.8rem 1.4rem;font-size:15px;font-weight:700;color:#fff;border:2px solid transparent;cursor:pointer;font-family:Arial,sans-serif;transition:all .15s;}
+.sopt:hover{filter:brightness(1.2);transform:translateY(-2px);}
+.sopt-a{background:#e63946;} .sopt-b{background:#64748b;} .sopt-c{background:#2a9d8f;}
+
+/* ESCAPE SLIDE */
+.s-escape{padding:1.5rem 1rem;max-width:780px;margin:0 auto;width:100%;}
+.escape-title{font-size:26px;font-weight:900;color:#fff;text-align:center;margin-bottom:1rem;}
+.escape-mission{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:14px;padding:1.2rem;margin-bottom:1rem;text-align:center;}
+.escape-mission p{font-size:15px;color:#fca5a5;line-height:1.7;}
+.indices-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.2rem;}
+.indice{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1rem;text-align:center;cursor:pointer;transition:all .2s;}
+.indice:hover{border-color:#fbbf24;background:rgba(251,191,36,.08);}
+.indice-icon{font-size:28px;margin-bottom:.4rem;}
+.indice-text{font-size:12px;color:#94a3b8;line-height:1.5;}
+.indice.revealed{border-color:#46e891;background:rgba(70,232,145,.08);}
+.indice.revealed .indice-text{color:#86efac;}
+.escape-question{background:rgba(255,255,255,.05);border-radius:12px;padding:1rem;text-align:center;font-size:17px;font-weight:700;color:#fff;margin-bottom:1rem;}
+
+/* SPEED QUIZ SLIDE */
+.s-speed{padding:1.5rem 1rem;max-width:780px;margin:0 auto;width:100%;}
+.speed-badge{display:inline-block;background:rgba(239,68,68,.2);color:#fca5a5;font-size:11px;font-weight:700;padding:.3rem 1rem;border-radius:20px;margin-bottom:1rem;}
+.speed-question{font-size:26px;font-weight:900;color:#fff;text-align:center;margin-bottom:.5rem;line-height:1.4;}
+.speed-hint{font-size:14px;color:#64748b;text-align:center;margin-bottom:1.2rem;}
+.speed-btns{display:flex;gap:16px;justify-content:center;margin-bottom:1.2rem;}
+.speed-vrai{background:#46e891;color:#000;border:none;border-radius:50px;padding:1rem 3rem;font-size:20px;font-weight:900;cursor:pointer;font-family:Arial,sans-serif;box-shadow:0 6px 20px rgba(70,232,145,.35);}
+.speed-faux{background:#ef4444;color:#fff;border:none;border-radius:50px;padding:1rem 3rem;font-size:20px;font-weight:900;cursor:pointer;font-family:Arial,sans-serif;box-shadow:0 6px 20px rgba(239,68,68,.35);}
+.speed-timer{width:100%;height:10px;background:rgba(255,255,255,.1);border-radius:5px;overflow:hidden;}
+.speed-fill{height:100%;background:#ef4444;border-radius:5px;}
+
+/* PODIUM */
+.s-podium{text-align:center;padding:2rem 1rem;}
+.podium-stage{display:flex;align-items:flex-end;justify-content:center;gap:14px;margin:1.5rem 0;}
+.pd-col{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.pd-name{font-size:15px;font-weight:800;color:#fff;}
+.pd-pts{font-size:13px;color:#94a3b8;}
+.pd-block{border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:center;width:120px;}
+.pb1{background:linear-gradient(180deg,#fbbf24,#d97706);height:110px;}
+.pb2{background:linear-gradient(180deg,#94a3b8,#64748b);height:75px;}
+.pb3{background:linear-gradient(180deg,#b45309,#92400e);height:52px;}
+.pd-num{font-size:28px;font-weight:900;color:#fff;}
+.full-rank{max-width:400px;margin:0 auto;}
+.fr-row{display:flex;align-items:center;gap:10px;padding:.5rem 1rem;border-radius:10px;background:rgba(255,255,255,.04);margin-bottom:5px;}
+
+/* NAV BAR */
+.nav-bar{display:flex;gap:8px;justify-content:center;margin-top:1.2rem;flex-wrap:wrap;}
+.nbtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:.5rem 1.2rem;font-size:13px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;}
+.nbtn:hover{background:rgba(255,255,255,.18);}
+.nbtn-primary{background:linear-gradient(135deg,#fbbf24,#d97706);color:#000;border-color:transparent;}
+.nbtn-green{background:linear-gradient(135deg,#46e891,#059669);color:#000;border-color:transparent;}
+.nbtn-menu{background:rgba(100,116,139,.2);border-color:rgba(100,116,139,.3);color:#94a3b8;font-size:11px;}
+
+/* CONFETTI */
+.cf{position:fixed;top:-20px;animation:cfall linear forwards;pointer-events:none;z-index:9999;border-radius:2px;}
+@keyframes cfall{to{transform:translateY(110vh) rotate(540deg);opacity:0;}}
+.bf{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:52px;font-weight:900;pointer-events:none;z-index:9998;opacity:0;}
+.bf.show{animation:bfpop .7s cubic-bezier(.4,2,.6,1) forwards;}
+@keyframes bfpop{0%{opacity:1;transform:translate(-50%,-50%) scale(.2);}60%{opacity:1;transform:translate(-50%,-50%) scale(1.1);}100%{opacity:0;transform:translate(-50%,-50%) scale(1);}}
+</style>
+</head>
+<body>
+
+<div class="bf" id="bf"></div>
+
+<!-- HUD -->
+<div class="hud" id="hud">
+  <div class="hud-teams" id="hud-teams"></div>
+  <div class="hud-right">
+    <span id="hud-info" style="font-size:11px;color:#475569;"></span>
+    <button class="hbtn" onclick="prevSlide()">◀</button>
+    <button class="hbtn" onclick="nextSlide()">▶</button>
+    <button class="hbtn" onclick="goMenu()" style="color:#fbbf24;">Menu</button>
+  </div>
+</div>
+
+<!-- MENU PRINCIPAL -->
+<div class="screen active" id="menu">
+  <div style="font-size:52px;text-align:center;margin-bottom:.5rem;">🎮</div>
+  <div class="menu-title">Pack Jeux <span>RH</span></div>
+  <div class="menu-sub">Administration du Personnel · TFP Chef de Cuisine</div>
+
+  <div class="teams-setup">
+    <div class="ts-title">👥 NOMS DES ÉQUIPES</div>
+    <div class="ts-grid">
+      <input class="ts-inp" id="t1" value="Équipe A" maxlength="14">
+      <input class="ts-inp" id="t2" value="Équipe B" maxlength="14">
+      <input class="ts-inp" id="t3" value="Équipe C" maxlength="14">
+      <input class="ts-inp" id="t4" value="Équipe D" maxlength="14">
+    </div>
+  </div>
+
+  <div class="menu-grid">
+    <div class="menu-card" onclick="startGame(&#39;roue&#39;)">
+      <div class="mc-icon">🎡</div>
+      <div class="mc-title">La Roue RH</div>
+      <div class="mc-sub">10 questions · équipes · scores · podium</div>
+    </div>
+    <div class="menu-card" onclick="startGame(&#39;speed&#39;)">
+      <div class="mc-icon">🧠</div>
+      <div class="mc-title">Quiz Speed</div>
+      <div class="mc-sub">Vrai / Faux · 5 secondes · rythme intense</div>
+    </div>
+    <div class="menu-card" onclick="startGame(&#39;scenario&#39;)">
+      <div class="mc-icon">🎬</div>
+      <div class="mc-title">Mises en Situation</div>
+      <div class="mc-sub">3 scénarios réels · cas concrets · débat</div>
+    </div>
+    <div class="menu-card" onclick="startGame(&#39;escape&#39;)">
+      <div class="mc-icon">🔐</div>
+      <div class="mc-title">Mini Escape Game</div>
+      <div class="mc-sub">Trouver les 3 erreurs du dossier RH</div>
+    </div>
+  </div>
+</div>
+
+<!-- JEU SCREEN -->
+<div class="screen" id="jeu">
+  <div class="slides-wrap" id="slides-wrap"></div>
+</div>
+
+<script>
+// ── STATE ──
+let teams=[], scores=[], currentSlide=0, slideIds=[], gameType='';
+const AC=new(window.AudioContext||window.webkitAudioContext)();
+function rAC(){try{AC.resume();}catch(e){}}
+
+// ── AUDIO ──
+function beep(t){
+  rAC();
+  try{
+    if(t==='ok'){[523,659,784].forEach((f,i)=>setTimeout(()=>{const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(.15,AC.currentTime+.03);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.35);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.35);},i*80));}
+    else if(t==='no'){[280,210].forEach((f,i)=>setTimeout(()=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sawtooth';o.frequency.value=f;g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(.1,AC.currentTime+.02);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.22);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.22);},i*100));}
+    else if(t==='win'){const mel=[523,523,523,659,523,659,784,1047];[0,120,240,360,600,750,900,1050].forEach((d,i)=>setTimeout(()=>{const o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=mel[i];g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(.08,AC.currentTime+.02);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.25);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.25);},d));}
+    else if(t==='tick'){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=880;g.gain.setValueAtTime(.06,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.06);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.06);}
+    else if(t==='ding'){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=1200;g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(.12,AC.currentTime+.02);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.4);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.4);}
+  }catch(e){}
+}
+
+// ── CONFETTI ──
+function confetti(n=40){
+  const cl=['#fbbf24','#46e891','#60a5fa','#f472b6','#fb923c'];
+  for(let i=0;i<n;i++){const el=document.createElement('div');el.className='cf';el.style.cssText=`left:${Math.random()*100}vw;background:${cl[i%cl.length]};width:${7+Math.random()*6}px;height:${5+Math.random()*5}px;border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.4+Math.random()*1.4}s;animation-delay:${Math.random()*.4}s;`;document.body.appendChild(el);setTimeout(()=>el.remove(),3200);}
+}
+
+function flash(txt,color){
+  const el=document.getElementById('bf');
+  el.textContent=txt;el.style.color=color||'#fbbf24';el.style.textShadow=`0 0 40px ${color||'#fbbf24'}`;
+  el.classList.add('show');setTimeout(()=>el.classList.remove('show'),900);
+}
+
+// ── TEAM COLORS ──
+const TC=['ht1','ht2','ht3','ht4'];
+const TH=['#3b82f6','#22c55e','#fbbf24','#ef4444'];
+const RBC=['rb1','rb2','rb3','rb4'];
+
+function updateHUD(){
+  const h=document.getElementById('hud-teams');
+  h.innerHTML=teams.map((t,i)=>`<div class="ht ${TC[i]}"><span>${t}</span><span class="sc">${scores[i]}</span></div>`).join('');
+}
+
+function addScore(ti){
+  scores[ti]++;beep('ok');confetti(22);flash(`+1 ⭐ ${teams[ti]}`,TH[ti]);updateHUD();
+}
+
+// ── NAVIGATION ──
+function showSlide(idx){
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('on'));
+  if(idx<0)idx=0;
+  if(idx>=slideIds.length)idx=slideIds.length-1;
+  currentSlide=idx;
+  const el=document.getElementById(slideIds[idx]);
+  if(el){el.classList.add('on');el.scrollIntoView({block:'start'});}
+  document.getElementById('hud-info').textContent=`${idx+1}/${slideIds.length}`;
+  if(slideIds[idx]==='s-podium')buildPodium();
+}
+function nextSlide(){showSlide(currentSlide+1);}
+function prevSlide(){showSlide(currentSlide-1);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')nextSlide();if(e.key==='ArrowLeft')prevSlide();});
+
+function goMenu(){
+  document.getElementById('jeu').classList.remove('active');
+  document.getElementById('menu').classList.add('active');
+  document.getElementById('hud').classList.remove('on');
+}
+
+function startGame(type){
+  rAC();
+  teams=[
+    document.getElementById('t1').value.trim()||'Équipe A',
+    document.getElementById('t2').value.trim()||'Équipe B',
+    document.getElementById('t3').value.trim()||'Équipe C',
+    document.getElementById('t4').value.trim()||'Équipe D',
+  ].filter(t=>t.length>0);
+  scores=teams.map(()=>0);
+  gameType=type;
+  buildGame(type);
+  updateHUD();
+  document.getElementById('hud').classList.add('on');
+  document.getElementById('menu').classList.remove('active');
+  document.getElementById('jeu').classList.add('active');
+  showSlide(0);
+}
+
+// ── TEAM BUTTONS HTML ──
+function teamBtns(qid){
+  return `<div class="rep-btns">${teams.map((t,i)=>`<button class="${RBC[i]} rb" onclick="addScore(${i});disableRepBtns('${qid}')">✅ ${t}</button>`).join('')}</div>`;
+}
+function stealBtns(qid){
+  return `<div class="steal-zone" id="steal-${qid}">
+    <div class="steal-label">🔀 Vol de réponse possible !</div>
+    <div class="rep-btns">${teams.map((t,i)=>`<button class="${RBC[i]} rb" style="font-size:12px;opacity:.8" onclick="addScore(${i});document.getElementById('steal-${qid}').style.display='none'">🔀 ${t} vole</button>`).join('')}</div>
+  </div>`;
+}
+function disableRepBtns(qid){
+  document.querySelectorAll(`#repbtns-${qid} button`).forEach(b=>{b.disabled=true;b.style.opacity='.4';});
+  const sz=document.getElementById(`steal-${qid}`);
+  if(sz)sz.style.display='block';
+}
+
+// ── NAV BUTTONS ──
+function navBtns(isLast){
+  return `<div class="nav-bar">
+    <button class="nbtn" onclick="prevSlide()">◀ Préc.</button>
+    ${isLast?`<button class="nbtn nbtn-green" onclick="showSlide(${slideIds.length-1})">🏆 Podium</button>`:`<button class="nbtn nbtn-primary" onclick="nextSlide()">Suivant ▶</button>`}
+    <button class="nbtn nbtn-menu" onclick="goMenu()">⬅ Menu</button>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════
+// BUILD GAME
+// ═══════════════════════════════════════════
+function buildGame(type){
+  const wrap=document.getElementById('slides-wrap');
+  wrap.innerHTML='';slideIds=[];
+
+  if(type==='roue') buildRoue(wrap);
+  else if(type==='speed') buildSpeed(wrap);
+  else if(type==='scenario') buildScenario(wrap);
+  else if(type==='escape') buildEscape(wrap);
+
+  // Podium slide (toujours à la fin)
+  const pod=document.createElement('div');pod.className='slide';pod.id='s-podium';
+  pod.innerHTML=`<div class="s-podium">
+    <div style="font-size:14px;color:#fbbf24;letter-spacing:.1em;margin-bottom:.3rem;">🏆 RÉSULTAT FINAL</div>
+    <div style="font-size:32px;font-weight:900;color:#fff;margin-bottom:1.5rem;">Le Podium</div>
+    <div class="podium-stage" id="podium-stage"></div>
+    <div class="full-rank" id="full-rank"></div>
+    <div class="nav-bar" style="margin-top:1.5rem;">
+      <button class="nbtn nbtn-primary" onclick="goMenu()">🔄 Retour au menu</button>
+    </div>
+  </div>`;
+  wrap.appendChild(pod);slideIds.push('s-podium');
+}
+
+// ── ROUE RH ──
+const ROUE_QS=[
+  {theme:'Recrutement',badge:'q-badge-blue',q:'Peut-on faire travailler un salarié sans validation RH ?',opts:['Oui','Non','Oui si urgent','Oui avec accord directeur'],ans:1,rep:'Non ! Il faut attendre le GO explicite de la RH.',loi:'Art. L.5221-8 C. trav.'},
+  {theme:'Recrutement',badge:'q-badge-blue',q:'Qui vérifie le titre de séjour auprès de la préfecture ?',opts:['Le chef de cuisine','Le salarié','Le service RH','La direction'],ans:2,rep:"Toujours la RH — jamais le chef seul !",loi:'Art. L.5221-8 C. trav.'},
+  {theme:'Recrutement',badge:'q-badge-blue',q:'Délai minimum pour anticiper une demande d\'embauche ?',opts:['2 jours','1 semaine','15 jours minimum','1 mois'],ans:2,rep:'Minimum 15 jours à l\'avance pour passer par le circuit.',loi:'Procédure interne'},
+  {theme:'Dossier Embauche',badge:'q-badge-green',q:'Combien de documents obligatoires lors d\'une embauche ?',opts:['4 documents','5 documents','7 documents','10 documents'],ans:2,rep:'7 : ID, Vitale, RIB, Mutuelle, Titre séjour, Transport, Livret famille.',loi:'Obligation employeur'},
+  {theme:'Dossier Embauche',badge:'q-badge-green',q:'La photo d\'identité est-elle obligatoire lors d\'une embauche ?',opts:['Oui toujours','Non','Oui si étranger','Oui pour CDI'],ans:1,rep:'Non ! La photo n\'est pas obligatoire légalement.',loi:'Obligation employeur'},
+  {theme:'Délais 48h',badge:'q-badge-amber',q:'Un CDD non signé dans les 48h devient automatiquement...',opts:['Nul et non avenu','Un CDI temps plein','Un CDI temps partiel','Un contrat intérim'],ans:1,rep:'CDI à temps plein ! Conséquences très lourdes.',loi:'Art. L.1242-13 C. trav.'},
+  {theme:'Délais 48h',badge:'q-badge-amber',q:'Le délai de 48h se calcule en jours...',opts:['Calendaires (samedi inclus)','Ouvrables (hors dimanche/fériés)','Heures de travail','Ouvrés (hors samedi)'],ans:1,rep:'Jours ouvrables. Commence vendredi → délai jusqu\'au mardi.',loi:'Art. L.1242-13 C. trav.'},
+  {theme:'VIP Médicale',badge:'q-badge-red',q:'Délai maximum pour la VIP après l\'embauche ?',opts:['1 mois','3 mois','6 mois','1 an'],ans:1,rep:'3 mois maximum après la prise de poste.',loi:'Art. R.4624-10 C. trav.'},
+  {theme:'Onboarding',badge:'q-badge-purple',q:'Quand commence réellement l\'intégration d\'un nouveau salarié ?',opts:['Le jour J','La veille','15 jours avant l\'arrivée','Après la PE'],ans:2,rep:'L\'onboarding commence 15 jours AVANT l\'arrivée ! Commander l\'uniforme, préparer le poste...',loi:'Bonnes pratiques RH'},
+  {theme:'Période d\'Essai',badge:'q-badge-blue',q:'Durée max de la PE pour un cadre en CDI ?',opts:['1 mois','2 mois','3 mois','4 mois'],ans:3,rep:'4 mois maximum pour un cadre en CDI.',loi:'Art. L.1221-19 C. trav.'},
+];
+
+function buildRoue(wrap){
+  // Titre
+  addSlide(wrap,'s-titre-roue',`<div class="s-titre">
+    <div class="big-icon">🎡</div>
+    <h1>La Roue <em>RH</em></h1>
+    <p>Jeu interactif — Administration du Personnel</p>
+    <p style="color:#475569;font-size:13px;margin-top:.3rem;">TFP Chef de Cuisine</p>
+  </div>${navBtns(false)}`);
+
+  // Règles
+  addSlide(wrap,'s-regles-roue',`<div class="s-regles">
+    <h2>📋 Règles du jeu</h2>
+    <div class="regles-grid">
+      <div class="rg-card"><div class="rg-icon">👥</div><div class="rg-text">2 à 4 équipes s'affrontent</div></div>
+      <div class="rg-card"><div class="rg-icon">⭐</div><div class="rg-text">Bonne réponse = +1 point</div></div>
+      <div class="rg-card"><div class="rg-icon">🔀</div><div class="rg-text">Vol possible si l'équipe se trompe</div></div>
+      <div class="rg-card"><div class="rg-icon">🃏</div><div class="rg-text">1 joker par équipe (passer la question)</div></div>
+    </div>
+  </div>${navBtns(false)}`);
+
+  // Questions & Réponses
+  ROUE_QS.forEach((q,i)=>{
+    const qid=`rq${i}`;
+    addSlide(wrap,`s-q-roue${i}`,`<div class="s-question">
+      <div class="q-header">
+        <span class="q-badge ${q.badge}">QUESTION ${i+1}/10</span>
+        <span class="q-theme">${q.theme}</span>
+      </div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-opts">
+        ${q.opts.map((o,j)=>`<div class="qo qo-${'abcd'[j]}"><div class="qo-letter">${'ABCD'[j]}</div>${o}</div>`).join('')}
+      </div>
+      <div class="timer-bar"><div class="timer-fill" id="tf${i}" style="width:100%"></div></div>
+    </div>${navBtns(i===ROUE_QS.length-1)}`);
+
+    addSlide(wrap,`s-r-roue${i}`,`<div class="s-reponse">
+      <div class="rep-check">✅</div>
+      <div class="rep-label">BONNE RÉPONSE : ${'ABCD'[q.ans]})</div>
+      <div class="rep-main">${q.opts[q.ans]}</div>
+      <div class="rep-expl">${q.rep}</div>
+      <div class="rep-law">${q.loi}</div>
+      <div class="rep-btns-label">QUI A RÉPONDU CORRECTEMENT ?</div>
+      <div id="repbtns-${qid}">${teamBtns(qid)}</div>
+      ${stealBtns(qid)}
+    </div>${navBtns(i===ROUE_QS.length-1)}`);
+  });
+}
+
+// ── SPEED QUIZ ──
+const SPEED_QS=[
+  {q:'On peut faire travailler quelqu\'un sans GO de la RH',ans:false,expl:'FAUX ! Le GO explicite de la RH est obligatoire AVANT toute prise de poste.'},
+  {q:'La VIP médicale est obligatoire pour tous les nouveaux salariés',ans:true,expl:'VRAI ! Dans les 3 mois max après embauche (avant pour les mineurs).'},
+  {q:'Le contrat CDD doit être signé dans les 48h',ans:true,expl:'VRAI ! Sinon requalification automatique en CDI à temps plein.'},
+  {q:'Le délai de 48h se calcule en jours calendaires',ans:false,expl:'FAUX ! Jours ouvrables — dimanche et jours fériés ne comptent pas.'},
+  {q:'La photo d\'identité est obligatoire lors d\'une embauche',ans:false,expl:'FAUX ! La photo n\'est pas un document obligatoire légalement.'},
+  {q:'L\'onboarding commence le jour d\'arrivée du salarié',ans:false,expl:'FAUX ! L\'onboarding commence 15 jours AVANT l\'arrivée.'},
+  {q:'La période d\'essai doit être mentionnée dans le contrat',ans:true,expl:'VRAI ! Si elle n\'est pas dans le contrat, elle n\'existe pas.'},
+  {q:'7 documents sont obligatoires lors d\'une embauche',ans:true,expl:'VRAI ! ID, Vitale, RIB, Mutuelle, Titre séjour, Transport, Livret famille.'},
+];
+
+function buildSpeed(wrap){
+  addSlide(wrap,'s-titre-speed',`<div class="s-titre">
+    <div class="big-icon">🧠</div>
+    <h1>Quiz <em>Speed</em></h1>
+    <p>Vrai ou Faux · 5 secondes pour répondre !</p>
+  </div>${navBtns(false)}`);
+
+  SPEED_QS.forEach((q,i)=>{
+    const qid=`sq${i}`;
+    addSlide(wrap,`s-speed${i}`,`<div class="s-speed">
+      <span class="speed-badge">🔥 QUESTION ${i+1}/${SPEED_QS.length} — 5 SECONDES !</span>
+      <div class="speed-question">${q.q}</div>
+      <div class="speed-hint">VRAI ou FAUX ?</div>
+      <div class="speed-btns">
+        <button class="speed-vrai" onclick="speedAnswer(true,${i})">✅ VRAI</button>
+        <button class="speed-faux" onclick="speedAnswer(false,${i})">❌ FAUX</button>
+      </div>
+      <div class="speed-timer"><div class="speed-fill" id="stf${i}" style="width:100%"></div></div>
+      <div id="speed-feedback-${i}" style="display:none;margin-top:1rem;background:rgba(255,255,255,.05);border-radius:12px;padding:1rem;text-align:center;">
+        <div id="speed-res-${i}" style="font-size:18px;font-weight:700;margin-bottom:.5rem;"></div>
+        <div style="font-size:14px;color:#94a3b8;">${q.expl}</div>
+        <div id="repbtns-${qid}" style="margin-top:.8rem;">${teamBtns(qid)}</div>
+        ${stealBtns(qid)}
+      </div>
+    </div>${navBtns(i===SPEED_QS.length-1)}`);
+  });
+}
+
+function speedAnswer(choice, qi){
+  const q=SPEED_QS[qi];
+  const correct=choice===q.ans;
+  const fb=document.getElementById(`speed-feedback-${qi}`);
+  const res=document.getElementById(`speed-res-${qi}`);
+  fb.style.display='block';
+  if(correct){
+    res.textContent='✅ '+( q.ans ? 'VRAI !' : 'FAUX !');
+    res.style.color='#46e891';
+    beep('ok');
+  } else {
+    res.textContent='❌ Raté ! C\'était '+(q.ans?'VRAI':'FAUX');
+    res.style.color='#ef4444';
+    beep('no');
+  }
+  document.querySelector(`#s-speed${qi} .speed-vrai`).disabled=true;
+  document.querySelector(`#s-speed${qi} .speed-faux`).disabled=true;
+}
+
+// ── SCENARIOS ──
+const SCENARIOS=[
+  {
+    badge:'🎬 SCÉNARIO 1',
+    ctx:'Vendredi soir, rush en cuisine. Le chef a besoin de renfort urgent. Il recrute quelqu\'un sur place sans passer par la RH.',
+    q:'Que fais-tu ?',
+    opts:['Tu laisses faire','Tu bloques et attends le GO RH','Tu régularises après le service'],
+    ans:1,
+    rep:'Tu BLOQUES. Même en urgence, aucun salarié ne commence sans validation RH.',
+    loi:'Responsabilité civile ET pénale engagée si accident.'
+  },
+  {
+    badge:'🎬 SCÉNARIO 2',
+    ctx:'Un nouveau salarié te présente son titre de séjour à l\'embauche.',
+    q:'Que fais-tu avec ce document ?',
+    opts:['Tu le regardes rapidement','Tu fais confiance à son apparence','Tu l\'envoies ORIGINAL à la RH'],
+    ans:2,
+    rep:'Tu envoies l\'ORIGINAL à la RH qui vérifie auprès de la préfecture.',
+    loi:'Jusqu\'à 5 ans d\'emprisonnement et 15 000€ d\'amende par salarié.'
+  },
+  {
+    badge:'🎬 SCÉNARIO 3',
+    ctx:'Un CDD a été signé mais le salarié ne l\'a pas encore signé. Ça fait déjà 3 jours ouvrables.',
+    q:'Que s\'est-il passé légalement ?',
+    opts:['Rien de grave','Le contrat est annulé','Le CDD est devenu un CDI automatiquement'],
+    ans:2,
+    rep:'Le CDD est automatiquement requalifié en CDI à temps plein après 48h ouvrables !',
+    loi:'Art. L.1242-13 C. trav. — Conséquences très lourdes pour l\'employeur.'
+  },
+];
+
+function buildScenario(wrap){
+  addSlide(wrap,'s-titre-scen',`<div class="s-titre">
+    <div class="big-icon">🎬</div>
+    <h1>Mises en <em>Situation</em></h1>
+    <p>3 scénarios réels · Que feriez-vous ?</p>
+  </div>${navBtns(false)}`);
+
+  SCENARIOS.forEach((s,i)=>{
+    const qid=`sc${i}`;
+    addSlide(wrap,`s-scen${i}`,`<div class="s-scenario">
+      <span class="scenario-badge">${s.badge}</span>
+      <div class="scenario-box">
+        <div class="scenario-context">📍 ${s.ctx}</div>
+        <div class="scenario-question">${s.q}</div>
+        <div class="scenario-opts">
+          ${s.opts.map((o,j)=>`<button class="sopt sopt-${'abc'[j]}" onclick="scenarioAnswer(${j},${i},'${qid}')">${'ABC'[j]}) ${o}</button>`).join('')}
+        </div>
+      </div>
+      <div id="scen-feedback-${i}" style="display:none;background:rgba(70,232,145,.08);border:1px solid rgba(70,232,145,.3);border-radius:14px;padding:1.2rem;text-align:center;">
+        <div style="font-size:18px;font-weight:700;color:#46e891;margin-bottom:.5rem;">✅ Bonne réponse : ${'ABC'[s.ans]}) ${s.opts[s.ans]}</div>
+        <div style="font-size:14px;color:#e2e8f0;margin-bottom:.4rem;">${s.rep}</div>
+        <div style="font-size:12px;color:#64748b;font-style:italic;margin-bottom:1rem;">${s.loi}</div>
+        <div class="rep-btns-label">QUI A TROUVÉ ?</div>
+        <div id="repbtns-${qid}">${teamBtns(qid)}</div>
+        ${stealBtns(qid)}
+      </div>
+    </div>${navBtns(i===SCENARIOS.length-1)}`);
+  });
+}
+
+function scenarioAnswer(choice, si, qid){
+  const s=SCENARIOS[si];
+  document.querySelectorAll(`#s-scen${si} .sopt`).forEach(b=>{b.disabled=true;b.style.opacity='.4';});
+  const fb=document.getElementById(`scen-feedback-${si}`);
+  fb.style.display='block';
+  if(choice===s.ans){beep('ok');confetti(20);}
+  else beep('no');
+}
+
+// ── ESCAPE GAME ──
+const INDICES=[
+  {icon:'📋',label:'Document 1',text:'Karim a commencé lundi matin. La demande RH a été envoyée... vendredi soir.',error:'Salarié a commencé SANS validation RH'},
+  {icon:'🪪',label:'Document 2',text:'Sofia a présenté son titre de séjour. Le chef l\'a regardé et dit "OK ça a l\'air bon".',error:'Titre de séjour NON transmis à la RH'},
+  {icon:'📝',label:'Document 3',text:'Le CDD de Lucas a été préparé le lundi. Il l\'a signé... le jeudi (4 jours après).',error:'Contrat CDD signé APRÈS les 48h ouvrables'},
+];
+
+function buildEscape(wrap){
+  addSlide(wrap,'s-titre-escape',`<div class="s-titre">
+    <div class="big-icon">🔐</div>
+    <h1>Mini <em>Escape Game</em></h1>
+    <p>Trouvez les 3 erreurs du dossier RH !</p>
+  </div>${navBtns(false)}`);
+
+  addSlide(wrap,'s-escape-main',`<div class="s-escape">
+    <div class="escape-title">🔐 Mission : Audit du Dossier RH</div>
+    <div class="escape-mission">
+      <p>📋 Vous êtes auditeur RH.<br>3 nouveaux salariés ont été embauchés cette semaine.<br>Des erreurs graves ont été commises.<br><strong style="color:#fff">Trouvez les 3 erreurs cachées dans les documents !</strong></p>
+    </div>
+    <div class="indices-grid">
+      ${INDICES.map((idx,i)=>`<div class="indice" id="indice-${i}" onclick="revealIndice(${i})">
+        <div class="indice-icon">${idx.icon}</div>
+        <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:.3rem;">${idx.label}</div>
+        <div class="indice-text" id="indice-text-${i}">Clique pour révéler l'indice...</div>
+      </div>`).join('')}
+    </div>
+    <div class="escape-question">❓ Quelles sont les 3 erreurs ?</div>
+    <div id="escape-rep" style="display:none;background:rgba(70,232,145,.08);border:1px solid rgba(70,232,145,.3);border-radius:12px;padding:1.2rem;text-align:center;">
+      <div style="font-size:16px;font-weight:700;color:#46e891;margin-bottom:.8rem;">✅ Les 3 erreurs :</div>
+      ${INDICES.map((idx,i)=>`<div style="font-size:13px;color:#e2e8f0;margin-bottom:.4rem;">❌ ${idx.error}</div>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:1rem;flex-wrap:wrap;">
+      <button class="nbtn nbtn-green" onclick="document.getElementById('escape-rep').style.display='block';beep('ok');confetti(30);">✅ Révéler les réponses</button>
+      ${teams.map((t,i)=>`<button class="${RBC[i]} rb" onclick="addScore(${i})">✅ ${t} a trouvé</button>`).join('')}
+    </div>
+    <div class="nav-bar">
+      <button class="nbtn" onclick="prevSlide()">◀ Préc.</button>
+      <button class="nbtn nbtn-green" onclick="showSlide(${slideIds.length})">🏆 Podium</button>
+      <button class="nbtn nbtn-menu" onclick="goMenu()">⬅ Menu</button>
+    </div>
+  </div>`);
+}
+
+function revealIndice(i){
+  const el=document.getElementById(`indice-${i}`);
+  const txt=document.getElementById(`indice-text-${i}`);
+  el.classList.add('revealed');
+  txt.textContent=INDICES[i].text;
+  beep('ding');
+}
+
+// ── HELPER ──
+function addSlide(wrap, id, html){
+  const div=document.createElement('div');
+  div.className='slide';div.id=id;
+  div.innerHTML=html;
+  wrap.appendChild(div);
+  slideIds.push(id);
+}
+
+// ── PODIUM ──
+function buildPodium(){
+  beep('win');confetti(80);
+  const sorted=[...teams.map((t,i)=>({name:t,score:scores[i],hex:TH[i]}))].sort((a,b)=>b.score-a.score);
+  const stage=document.getElementById('podium-stage');
+  const full=document.getElementById('full-rank');
+  if(!stage||!full)return;
+  stage.innerHTML='';full.innerHTML='';
+  const order=[1,0,2];const blockH=['pb2','pb1','pb3'];const nums=['2','1','3'];
+  order.forEach((rank,pos)=>{
+    const p=sorted[rank];if(!p)return;
+    const col=document.createElement('div');col.className='pd-col';
+    col.innerHTML=`<div class="pd-name" style="color:${p.hex}">${p.name}</div>
+      <div class="pd-pts">${p.score} pts</div>
+      <div class="pd-block ${blockH[pos]}"><div class="pd-num">${nums[pos]}</div></div>`;
+    stage.appendChild(col);
+  });
+  const medals=['🥇','🥈','🥉','4️⃣'];
+  sorted.forEach((p,i)=>{
+    const d=document.createElement('div');d.className='fr-row';
+    d.innerHTML=`<span style="font-size:18px">${medals[i]}</span><span style="flex:1;font-weight:700;color:${p.hex}">${p.name}</span><span style="font-weight:900;color:#fbbf24">${p.score} pts</span>`;
+    full.appendChild(d);
+  });
+}
+</script>
+
+
+</body></html>
