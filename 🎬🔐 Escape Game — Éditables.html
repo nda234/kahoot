@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)file:///C:/Users/0189334/Downloads/JEUX_RH_EDITABLES%20(1).html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🎬🔐 Scénarios + Escape Game — Éditables</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,'Helvetica Neue',sans-serif;background:#0f172a;color:#fff;min-height:100vh;}
+
+/* ══ SCREENS ══ */
+.screen{display:none;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;}
+
+/* ══ HUD ══ */
+.hud{position:fixed;top:0;left:0;right:0;height:54px;background:rgba(15,23,42,.97);border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-between;padding:0 1rem;z-index:200;}
+.hud-teams{display:flex;gap:8px;}
+.ht{display:flex;align-items:center;gap:6px;padding:.3rem .8rem;border-radius:20px;font-size:13px;font-weight:700;border:1.5px solid;}
+.ht1{border-color:#3b82f6;background:rgba(59,130,246,.15);color:#93c5fd;}
+.ht2{border-color:#22c55e;background:rgba(34,197,94,.15);color:#86efac;}
+.ht3{border-color:#fbbf24;background:rgba(251,191,36,.15);color:#fcd34d;}
+.ht4{border-color:#ef4444;background:rgba(239,68,68,.15);color:#fca5a5;}
+.ht .sc{font-size:18px;font-weight:900;margin-left:4px;}
+.hud-right{display:flex;gap:6px;}
+.hbtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:8px;padding:.3rem .8rem;font-size:12px;cursor:pointer;font-family:Arial,sans-serif;}
+.hbtn:hover{background:rgba(255,255,255,.18);}
+.hbtn-gold{background:rgba(251,191,36,.2);border-color:#fbbf24;color:#fcd34d;}
+
+/* ══ MENU ══ */
+#menu{align-items:center;justify-content:center;background:linear-gradient(135deg,#1e1b4b,#0f172a);padding:2rem;}
+.menu-wrap{width:100%;max-width:700px;}
+.menu-logo{font-size:52px;text-align:center;margin-bottom:.5rem;}
+.menu-title{font-size:34px;font-weight:900;color:#fff;text-align:center;margin-bottom:.3rem;}
+.menu-title span{color:#fbbf24;}
+.menu-sub{font-size:14px;color:#94a3b8;text-align:center;margin-bottom:1.5rem;}
+.team-setup{background:rgba(255,255,255,.04);border-radius:14px;padding:1rem 1.2rem;margin-bottom:1.2rem;}
+.ts-label{font-size:11px;font-weight:700;color:#fbbf24;letter-spacing:.08em;margin-bottom:.6rem;}
+.ts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.ts-inp{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.12);border-radius:8px;padding:8px;font-size:13px;color:#fff;font-family:Arial,sans-serif;outline:none;width:100%;text-align:center;}
+.ts-inp:focus{border-color:#fbbf24;}
+.games-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.2rem;}
+.game-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:1.2rem;cursor:pointer;transition:all .2s;text-align:center;position:relative;}
+.game-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.3);}
+.gc-icon{font-size:36px;margin-bottom:.5rem;}
+.gc-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:.3rem;}
+.gc-sub{font-size:12px;color:#64748b;}
+.gc-count{position:absolute;top:10px;right:12px;background:rgba(251,191,36,.2);color:#fbbf24;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;}
+.btn-edit-menu{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fbbf24;border-radius:50px;padding:.5rem 1.2rem;font-size:12px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;margin-top:.5rem;}
+.btn-edit-menu:hover{background:rgba(251,191,36,.25);}
+
+/* ══ JEU SCREEN ══ */
+#jeu{padding-top:54px;}
+.slides{width:100%;max-width:920px;margin:0 auto;padding:1.2rem;}
+.slide{display:none;}
+.slide.on{display:block;animation:sin .3s ease;}
+@keyframes sin{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* TITRES SECTIONS */
+.s-titre{text-align:center;padding:3rem 1rem;}
+.big-icon{font-size:72px;margin-bottom:.8rem;}
+.s-titre h1{font-size:46px;font-weight:900;color:#fff;margin-bottom:.5rem;}
+.s-titre h1 em{font-style:normal;}
+.s-titre p{font-size:15px;color:#94a3b8;}
+
+/* SCENARIO */
+.s-scenario{padding:1rem;}
+.scen-badge{display:inline-block;padding:.3rem 1rem;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:.8rem;background:rgba(217,119,6,.2);color:#fcd34d;}
+.scen-ctx-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.2rem;margin-bottom:1rem;}
+.scen-ctx-label{font-size:11px;font-weight:700;color:#f59e0b;letter-spacing:.08em;margin-bottom:.4rem;}
+.scen-ctx-text{font-size:16px;color:#e2e8f0;line-height:1.7;font-style:italic;}
+.scen-q{font-size:22px;font-weight:800;color:#fff;text-align:center;margin-bottom:1rem;line-height:1.4;}
+.scen-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem;}
+.scen-opt{border-radius:12px;padding:.9rem 1.2rem;display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;border:none;font-family:Arial,sans-serif;transition:all .15s;text-align:left;}
+.scen-opt:hover{filter:brightness(1.2);transform:translateX(4px);}
+.scen-opt-a{background:#e63946;} .scen-opt-b{background:#64748b;} .scen-opt-c{background:#2a9d8f;} .scen-opt-d{background:#8338ec;}
+.scen-opt .ol{width:30px;height:30px;background:rgba(0,0,0,.2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0;}
+.feedback{background:rgba(70,232,145,.08);border:1px solid rgba(70,232,145,.3);border-radius:14px;padding:1.2rem;margin-bottom:1rem;display:none;}
+.feedback.show{display:block;animation:sin .3s ease;}
+.fb-title{font-size:16px;font-weight:700;color:#46e891;margin-bottom:.4rem;}
+.fb-body{font-size:14px;color:#e2e8f0;line-height:1.6;margin-bottom:.3rem;}
+.fb-law{font-size:12px;color:#64748b;font-style:italic;margin-bottom:.8rem;}
+.rep-btns-label{font-size:11px;font-weight:700;color:#fbbf24;letter-spacing:.08em;margin-bottom:.4rem;}
+.rep-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.rb{border:none;border-radius:30px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;transition:transform .1s;}
+.rb:hover{transform:scale(1.05);}
+.rb1{background:#3b82f6;color:#fff;} .rb2{background:#22c55e;color:#fff;}
+.rb3{background:#fbbf24;color:#000;} .rb4{background:#ef4444;color:#fff;}
+.steal-zone{margin-top:.6rem;background:rgba(251,191,36,.08);border-radius:10px;padding:.6rem;display:none;}
+.steal-label{font-size:11px;color:#fbbf24;margin-bottom:.4rem;}
+
+/* ESCAPE */
+.s-escape{padding:1rem;}
+.escape-header{background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.3);border-radius:14px;padding:1.2rem;margin-bottom:1rem;text-align:center;}
+.escape-header h2{font-size:22px;font-weight:900;color:#fff;margin-bottom:.3rem;}
+.escape-header p{font-size:14px;color:#fca5a5;line-height:1.6;}
+.indice-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.2rem;margin-bottom:.8rem;cursor:pointer;transition:all .2s;}
+.indice-card:hover{border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.05);}
+.indice-card.revealed{border-color:rgba(70,232,145,.4);background:rgba(70,232,145,.05);}
+.indice-top{display:flex;align-items:center;gap:12px;margin-bottom:.6rem;}
+.indice-icon{font-size:32px;flex-shrink:0;}
+.indice-label{font-size:14px;font-weight:700;color:#fbbf24;}
+.indice-hint{font-size:12px;color:#64748b;}
+.indice-content{display:none;font-size:14px;color:#e2e8f0;line-height:1.7;font-style:italic;border-top:1px solid rgba(255,255,255,.08);padding-top:.8rem;margin-top:.4rem;}
+.indice-card.revealed .indice-content{display:block;}
+.indice-answer{display:none;background:rgba(70,232,145,.1);border-radius:8px;padding:.6rem .8rem;margin-top:.6rem;font-size:13px;font-weight:700;color:#46e891;}
+.indice-card.revealed .indice-answer{display:block;}
+.escape-question{background:rgba(255,255,255,.05);border-radius:12px;padding:1rem;text-align:center;font-size:18px;font-weight:700;color:#fff;margin-bottom:1rem;}
+.escape-rep-box{background:rgba(70,232,145,.08);border:1px solid rgba(70,232,145,.3);border-radius:14px;padding:1.2rem;margin-bottom:1rem;display:none;}
+.escape-rep-box.show{display:block;}
+
+/* NAV */
+.nav-bar{display:flex;gap:8px;justify-content:center;margin-top:1rem;flex-wrap:wrap;}
+.nbtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:.5rem 1.2rem;font-size:13px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;}
+.nbtn:hover{background:rgba(255,255,255,.18);}
+.nbtn-primary{background:linear-gradient(135deg,#fbbf24,#d97706);color:#000;border-color:transparent;}
+.nbtn-green{background:linear-gradient(135deg,#46e891,#059669);color:#000;border-color:transparent;}
+.nbtn-menu{background:rgba(100,116,139,.15);border-color:rgba(100,116,139,.3);color:#94a3b8;font-size:12px;}
+
+/* PODIUM */
+.s-podium{text-align:center;padding:2rem 1rem;}
+.podium-stage{display:flex;align-items:flex-end;justify-content:center;gap:14px;margin:1.5rem 0;}
+.pd-col{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.pd-name{font-size:15px;font-weight:800;color:#fff;}
+.pd-pts{font-size:13px;color:#94a3b8;}
+.pd-block{border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:center;width:120px;}
+.pb1{background:linear-gradient(180deg,#fbbf24,#d97706);height:110px;}
+.pb2{background:linear-gradient(180deg,#94a3b8,#64748b);height:75px;}
+.pb3{background:linear-gradient(180deg,#b45309,#92400e);height:52px;}
+.pd-num{font-size:28px;font-weight:900;color:#fff;}
+.fr-row{display:flex;align-items:center;gap:10px;padding:.5rem 1rem;border-radius:10px;background:rgba(255,255,255,.04);margin-bottom:5px;max-width:400px;margin-left:auto;margin-right:auto;}
+
+/* ══ ÉDITEUR ══ */
+#editeur{align-items:center;justify-content:flex-start;padding:1.5rem;overflow-y:auto;background:#0f172a;}
+.edit-header{width:100%;max-width:800px;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.edit-title{font-size:22px;font-weight:900;color:#fbbf24;}
+.edit-tabs{display:flex;gap:8px;margin-bottom:1.2rem;width:100%;max-width:800px;}
+.etab{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.5rem 1.2rem;font-size:13px;font-weight:700;cursor:pointer;color:#94a3b8;font-family:Arial,sans-serif;}
+.etab.on{background:rgba(251,191,36,.2);border-color:#fbbf24;color:#fbbf24;}
+.edit-section{width:100%;max-width:800px;display:none;}
+.edit-section.on{display:block;}
+.item-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.2rem;margin-bottom:1rem;position:relative;}
+.item-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.item-num{font-size:14px;font-weight:700;color:#fbbf24;}
+.item-del{background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.3);color:#fca5a5;border-radius:8px;padding:.3rem .7rem;font-size:12px;cursor:pointer;font-family:Arial,sans-serif;}
+.item-del:hover{background:rgba(239,68,68,.35);}
+.edit-label{font-size:11px;font-weight:700;color:#64748b;letter-spacing:.06em;margin-bottom:.4rem;margin-top:.7rem;}
+.edit-input{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:8px;padding:.6rem .8rem;font-size:14px;color:#fff;font-family:Arial,sans-serif;outline:none;transition:border-color .2s;}
+.edit-input:focus{border-color:#fbbf24;}
+.edit-textarea{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:8px;padding:.6rem .8rem;font-size:14px;color:#fff;font-family:Arial,sans-serif;outline:none;transition:border-color .2s;resize:vertical;min-height:70px;}
+.edit-textarea:focus{border-color:#fbbf24;}
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ans-select{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:8px;padding:.6rem .8rem;font-size:14px;color:#fff;font-family:Arial,sans-serif;outline:none;}
+.ans-select:focus{border-color:#fbbf24;}
+.btn-add-item{background:rgba(70,232,145,.15);border:1px solid rgba(70,232,145,.3);color:#46e891;border-radius:50px;padding:.7rem 1.8rem;font-size:14px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;margin-top:.5rem;}
+.btn-add-item:hover{background:rgba(70,232,145,.25);}
+.btn-save{background:linear-gradient(135deg,#fbbf24,#d97706);color:#000;border:none;border-radius:50px;padding:.8rem 2.5rem;font-size:15px;font-weight:900;cursor:pointer;font-family:Arial,sans-serif;margin-top:1rem;}
+.btn-save:hover{filter:brightness(1.1);}
+.save-ok{font-size:13px;color:#46e891;margin-left:1rem;display:none;}
+
+/* CONFETTI */
+.cf{position:fixed;top:-20px;animation:cfall linear forwards;pointer-events:none;z-index:9999;border-radius:2px;}
+@keyframes cfall{to{transform:translateY(110vh) rotate(540deg);opacity:0;}}
+.bflash{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:52px;font-weight:900;pointer-events:none;z-index:9998;opacity:0;}
+.bflash.show{animation:bfp .7s cubic-bezier(.4,2,.6,1) forwards;}
+@keyframes bfp{0%{opacity:1;transform:translate(-50%,-50%) scale(.2);}60%{opacity:1;transform:translate(-50%,-50%) scale(1.1);}100%{opacity:0;transform:translate(-50%,-50%) scale(1);}}
+</style>
+</head>
+<body>
+<div class="bflash" id="bf"></div>
+
+<!-- HUD -->
+<div class="hud" id="hud" style="display:none;">
+  <div class="hud-teams" id="hud-teams"></div>
+  <div class="hud-right">
+    <span id="hud-info" style="font-size:11px;color:#475569;"></span>
+    <button class="hbtn" onclick="prevSlide()">◀</button>
+    <button class="hbtn" onclick="nextSlide()">▶</button>
+    <button class="hbtn hbtn-gold" onclick="goEdit()">✏️ Éditer</button>
+    <button class="hbtn" onclick="goMenu()">⬅ Menu</button>
+  </div>
+</div>
+
+<!-- ══ MENU ══ -->
+<div class="screen active" id="menu">
+  <div class="menu-wrap">
+    <div class="menu-logo">🎮</div>
+    <div class="menu-title">Jeux <span>RH</span> Éditables</div>
+    <div class="menu-sub">Scénarios + Escape Game · Ajoute tes propres questions !</div>
+
+    <div class="team-setup">
+      <div class="ts-label">👥 NOMS DES ÉQUIPES</div>
+      <div class="ts-grid">
+        <input class="ts-inp" id="t1" value="Équipe A" maxlength="14">
+        <input class="ts-inp" id="t2" value="Équipe B" maxlength="14">
+        <input class="ts-inp" id="t3" value="Équipe C" maxlength="14">
+        <input class="ts-inp" id="t4" value="Équipe D" maxlength="14">
+      </div>
+    </div>
+
+    <div class="games-grid">
+      <div class="game-card" onclick="startGame(&#39;scenario&#39;)">
+        <div class="gc-count" id="scen-count">3 scénarios</div>
+        <div class="gc-icon">🎬</div>
+        <div class="gc-title">Scénarios</div>
+        <div class="gc-sub">Mises en situation réelles</div>
+        <button class="btn-edit-menu" onclick="event.stopPropagation();openEdit(&#39;scenario&#39;)">✏️ Modifier / Ajouter</button>
+      </div>
+      <div class="game-card" onclick="startGame(&#39;escape&#39;)">
+        <div class="gc-count" id="escape-count">3 indices</div>
+        <div class="gc-icon">🔐</div>
+        <div class="gc-title">Escape Game</div>
+        <div class="gc-sub">Trouver les erreurs RH</div>
+        <button class="btn-edit-menu" onclick="event.stopPropagation();openEdit(&#39;escape&#39;)">✏️ Modifier / Ajouter</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ JEU ══ -->
+<div class="screen" id="jeu">
+  <div class="slides" id="slides-wrap"></div>
+</div>
+
+<!-- ══ ÉDITEUR ══ -->
+<div class="screen" id="editeur">
+  <div class="edit-header">
+    <div class="edit-title" id="edit-title">✏️ Éditeur</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <button class="btn-save" onclick="saveData()">💾 Sauvegarder</button>
+      <span class="save-ok" id="save-ok">✅ Sauvegardé !</span>
+      <button class="nbtn nbtn-menu" onclick="goMenu()">⬅ Retour</button>
+    </div>
+  </div>
+
+  <div class="edit-tabs">
+    <button class="etab on" id="tab-scenario" onclick="switchTab(&#39;scenario&#39;)">🎬 Scénarios</button>
+    <button class="etab" id="tab-escape" onclick="switchTab(&#39;escape&#39;)">🔐 Escape Game</button>
+  </div>
+
+  <!-- SCÉNARIOS ÉDITEUR -->
+  <div class="edit-section on" id="edit-scenario">
+    <div id="scen-items"></div>
+    <button class="btn-add-item" onclick="addScenario()">+ Ajouter un scénario</button>
+  </div>
+
+  <!-- ESCAPE ÉDITEUR -->
+  <div class="edit-section" id="edit-escape">
+    <div id="escape-items"></div>
+    <button class="btn-add-item" onclick="addIndice()">+ Ajouter un indice</button>
+  </div>
+</div>
+
+<script>
+// ══ DONNÉES PAR DÉFAUT ══
+const DEFAULT_SCENARIOS = [
+  {ctx:"Vendredi soir, rush en cuisine. Le chef recrute quelqu'un sur place sans passer par la RH.",q:"Que fais-tu ?",opts:["Tu laisses faire","Tu bloques et attends le GO RH","Tu régularises après le service"],ans:1,rep:"Tu BLOQUES. Même en urgence, aucun salarié ne commence sans validation RH.",loi:"Responsabilité civile ET pénale si accident."},
+  {ctx:"Un nouveau salarié te présente son titre de séjour à l'embauche.",q:"Que fais-tu avec ce document ?",opts:["Tu le regardes rapidement","Tu fais confiance","Tu l'envoies ORIGINAL à la RH"],ans:2,rep:"Tu envoies l'ORIGINAL à la RH qui vérifie auprès de la préfecture.",loi:"Jusqu'à 5 ans d'emprisonnement et 15 000€ d'amende."},
+  {ctx:"Un CDD a été préparé lundi. Le salarié ne l'a signé que jeudi (4 jours ouvrables après).",q:"Que s'est-il passé légalement ?",opts:["Rien de grave","Le contrat est annulé","Le CDD est devenu CDI automatiquement"],ans:2,rep:"Le CDD est requalifié en CDI à temps plein après 48h ouvrables !",loi:"Art. L.1242-13 C. trav."},
+];
+
+const DEFAULT_INDICES = [
+  {icon:"📋",label:"Dossier 1 — Karim",ctx:"Karim a commencé lundi matin. La demande RH a été envoyée vendredi soir.",error:"Salarié a commencé SANS validation RH"},
+  {icon:"🪪",label:"Dossier 2 — Sofia",ctx:"Sofia a présenté son titre de séjour. Le chef l'a regardé et dit 'OK ça a l'air bon'.",error:"Titre de séjour NON transmis à la RH"},
+  {icon:"📝",label:"Dossier 3 — Lucas",ctx:"Le CDD de Lucas a été préparé lundi. Il l'a signé jeudi (4 jours après).",error:"CDD signé APRÈS les 48h ouvrables"},
+];
+
+// Charger depuis localStorage ou utiliser les défauts
+let SCENARIOS = JSON.parse(localStorage.getItem('rh_scenarios') || 'null') || JSON.parse(JSON.stringify(DEFAULT_SCENARIOS));
+let INDICES = JSON.parse(localStorage.getItem('rh_indices') || 'null') || JSON.parse(JSON.stringify(DEFAULT_INDICES));
+
+function saveToStorage(){
+  localStorage.setItem('rh_scenarios', JSON.stringify(SCENARIOS));
+  localStorage.setItem('rh_indices', JSON.stringify(INDICES));
+}
+
+// ══ STATE ══
+let teams=[], scores=[], currentSlide=0, slideIds=[], gameType='';
+const OPT_COLORS=['#e63946','#64748b','#2a9d8f','#8338ec'];
+const OPT_LETTERS=['A','B','C','D'];
+const TC=['ht1','ht2','ht3','ht4'];
+const TH=['#3b82f6','#22c55e','#fbbf24','#ef4444'];
+const RBC=['rb1','rb2','rb3','rb4'];
+
+// ══ AUDIO ══
+const AC=new(window.AudioContext||window.webkitAudioContext)();
+function rAC(){try{AC.resume();}catch(e){}}
+function beep(t){rAC();try{
+  if(t==='ok'){[523,659,784].forEach((f,i)=>setTimeout(()=>{const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(.15,AC.currentTime+.03);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.35);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.35);},i*80));}
+  else if(t==='no'){[280,210].forEach((f,i)=>setTimeout(()=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sawtooth';o.frequency.value=f;g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(.1,AC.currentTime+.02);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.22);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.22);},i*100));}
+  else if(t==='win'){const mel=[523,523,523,659,784,1047];[0,120,240,360,550,700].forEach((d,i)=>setTimeout(()=>{const o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=mel[i];g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(.08,AC.currentTime+.02);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.25);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.25);},d));}
+  else if(t==='ding'){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=1200;g.gain.setValueAtTime(0,AC.currentTime);g.gain.linearRampToValueAtTime(.12,AC.currentTime+.02);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.4);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.4);}
+}catch(e){}}
+
+function confetti(n=35){const cl=['#fbbf24','#46e891','#60a5fa','#f472b6','#fb923c'];for(let i=0;i<n;i++){const el=document.createElement('div');el.className='cf';el.style.cssText=`left:${Math.random()*100}vw;background:${cl[i%cl.length]};width:${7+Math.random()*6}px;height:${5+Math.random()*5}px;border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.4+Math.random()*1.4}s;animation-delay:${Math.random()*.4}s;`;document.body.appendChild(el);setTimeout(()=>el.remove(),3200);}}
+function flash(txt,color){const el=document.getElementById('bf');el.textContent=txt;el.style.color=color||'#fbbf24';el.classList.add('show');setTimeout(()=>el.classList.remove('show'),900);}
+
+// ══ SCREENS ══
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goMenu(){show('menu');document.getElementById('hud').style.display='none';updateMenuCounts();}
+function goEdit(){show('editeur');document.getElementById('hud').style.display='none';renderEditor();}
+function openEdit(tab){switchTab(tab);show('editeur');renderEditor();}
+
+function updateMenuCounts(){
+  document.getElementById('scen-count').textContent=SCENARIOS.length+' scénario'+(SCENARIOS.length>1?'s':'');
+  document.getElementById('escape-count').textContent=INDICES.length+' indice'+(INDICES.length>1?'s':'');
+}
+
+// ══ NAVIGATION ══
+function showSlide(idx){
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('on'));
+  if(idx<0)idx=0;if(idx>=slideIds.length)idx=slideIds.length-1;
+  currentSlide=idx;
+  const el=document.getElementById(slideIds[idx]);
+  if(el){el.classList.add('on');el.scrollIntoView({block:'start',behavior:'smooth'});}
+  document.getElementById('hud-info').textContent=(idx+1)+'/'+slideIds.length;
+  if(slideIds[idx]==='s-podium')buildPodium();
+}
+function nextSlide(){showSlide(currentSlide+1);}
+function prevSlide(){showSlide(currentSlide-1);}
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('jeu').classList.contains('active')){
+    if(e.key==='ArrowRight'||e.key===' ')nextSlide();
+    if(e.key==='ArrowLeft')prevSlide();
+  }
+});
+
+// ══ HUD ══
+function updateHUD(){
+  document.getElementById('hud-teams').innerHTML=teams.map((t,i)=>`<div class="ht ${TC[i]}"><span>${t}</span><span class="sc">${scores[i]}</span></div>`).join('');
+}
+function addScore(ti){scores[ti]++;beep('ok');confetti(22);flash('+1 ⭐ '+teams[ti],TH[ti]);updateHUD();}
+
+// ══ HELPER BUTTONS ══
+function teamBtns(id){return `<div class="rep-btns">${teams.map((t,i)=>`<button class="rb ${RBC[i]}" onclick="addScore(${i});disableTeamBtns('${id}')">✅ ${t}</button>`).join('')}</div>`;}
+function stealBtns(id){return `<div class="steal-zone" id="steal-${id}"><div class="steal-label">🔀 Vol possible !</div><div class="rep-btns">${teams.map((t,i)=>`<button class="rb ${RBC[i]}" style="font-size:12px;opacity:.8" onclick="addScore(${i});document.getElementById('steal-${id}').style.display='none'">🔀 ${t}</button>`).join('')}</div></div>`;}
+function disableTeamBtns(id){document.querySelectorAll(`#repbtns-${id} button`).forEach(b=>{b.disabled=true;b.style.opacity='.4';});const s=document.getElementById(`steal-${id}`);if(s)s.style.display='block';}
+
+function navBtns(isLast,podIdx){
+  return `<div class="nav-bar">
+    <button class="nbtn" onclick="prevSlide()">◀ Préc.</button>
+    ${isLast?`<button class="nbtn nbtn-green" onclick="showSlide(${podIdx})">🏆 Podium !</button>`:`<button class="nbtn nbtn-primary" onclick="nextSlide()">Suivant ▶</button>`}
+    <button class="nbtn nbtn-menu" onclick="goMenu()">⬅ Menu</button>
+  </div>`;
+}
+
+// ══ START GAME ══
+function startGame(type){
+  rAC();
+  teams=[
+    document.getElementById('t1').value.trim()||'Équipe A',
+    document.getElementById('t2').value.trim()||'Équipe B',
+    document.getElementById('t3').value.trim()||'Équipe C',
+    document.getElementById('t4').value.trim()||'Équipe D',
+  ].filter(t=>t);
+  scores=teams.map(()=>0);
+  gameType=type;
+  buildGame(type);
+  updateHUD();
+  document.getElementById('hud').style.display='flex';
+  show('jeu');
+  showSlide(0);
+}
+
+// ══ BUILD GAME ══
+function buildGame(type){
+  const wrap=document.getElementById('slides-wrap');
+  wrap.innerHTML='';slideIds=[];
+  if(type==='scenario') buildScenarios(wrap);
+  else if(type==='escape') buildEscape(wrap);
+  // Podium
+  const pod=document.createElement('div');pod.className='slide';pod.id='s-podium';
+  pod.innerHTML=`<div class="s-podium">
+    <div style="font-size:14px;color:#fbbf24;letter-spacing:.1em;margin-bottom:.3rem;">🏆 RÉSULTAT FINAL</div>
+    <div style="font-size:32px;font-weight:900;margin-bottom:1.5rem;">Le Podium</div>
+    <div class="podium-stage" id="podium-stage"></div>
+    <div id="full-rank"></div>
+    <div class="nav-bar" style="margin-top:1.5rem;">
+      <button class="nbtn nbtn-primary" onclick="goMenu()">🔄 Retour au menu</button>
+    </div>
+  </div>`;
+  wrap.appendChild(pod);slideIds.push('s-podium');
+}
+
+// ══ SCÉNARIOS ══
+function buildScenarios(wrap){
+  // Titre
+  const ts=document.createElement('div');ts.className='slide';ts.id='s-tit-scen';
+  ts.innerHTML=`<div class="s-titre">
+    <div class="big-icon">🎬</div>
+    <h1>Mises en <em style="color:#f59e0b">Situation</em></h1>
+    <p>${SCENARIOS.length} scénario${SCENARIOS.length>1?'s':''} · Que feriez-vous ?</p>
+    <p style="color:#475569;font-size:12px;margin-top:.3rem;">Discutez en équipe puis levez la main !</p>
+  </div>${navBtns(false)}`;
+  wrap.appendChild(ts);slideIds.push('s-tit-scen');
+
+  SCENARIOS.forEach((sc,i)=>{
+    const id=`sc${i}`;
+    const isLast=i===SCENARIOS.length-1;
+    // Question
+    const qs=document.createElement('div');qs.className='slide';qs.id=`s-scen-q${i}`;
+    qs.innerHTML=`<div class="s-scenario">
+      <span class="scen-badge">🎬 SCÉNARIO ${i+1}/${SCENARIOS.length}</span>
+      <div class="scen-ctx-box">
+        <div class="scen-ctx-label">📍 CONTEXTE</div>
+        <div class="scen-ctx-text">${sc.ctx}</div>
+      </div>
+      <div class="scen-q">${sc.q}</div>
+      <div class="scen-opts">
+        ${sc.opts.map((opt,j)=>`<button class="scen-opt" style="background:${OPT_COLORS[j]}" onclick="answerScenario(${j},${i},'${id}')">
+          <div class="ol">${OPT_LETTERS[j]}</div>${opt}
+        </button>`).join('')}
+      </div>
+    </div>${navBtns(isLast,slideIds.length+2+SCENARIOS.length*2-i*2-2)}`;
+    wrap.appendChild(qs);slideIds.push(`s-scen-q${i}`);
+
+    // Réponse
+    const rs=document.createElement('div');rs.className='slide';rs.id=`s-scen-r${i}`;
+    rs.innerHTML=`<div class="s-scenario">
+      <span class="scen-badge">✅ RÉPONSE — SCÉNARIO ${i+1}</span>
+      <div class="feedback show">
+        <div class="fb-title">✅ Bonne réponse : ${OPT_LETTERS[sc.ans]}) ${sc.opts[sc.ans]}</div>
+        <div class="fb-body">${sc.rep}</div>
+        <div class="fb-law">${sc.loi}</div>
+        <div class="rep-btns-label">👇 QUI A TROUVÉ ?</div>
+        <div id="repbtns-${id}">${teamBtns(id)}</div>
+        ${stealBtns(id)}
+      </div>
+    </div>${navBtns(isLast,slideIds.length+1+SCENARIOS.length*2-i*2-2)}`;
+    wrap.appendChild(rs);slideIds.push(`s-scen-r${i}`);
+  });
+}
+
+function answerScenario(choice,si,id){
+  const sc=SCENARIOS[si];
+  document.querySelectorAll(`#s-scen-q${si} .scen-opt`).forEach(b=>{b.disabled=true;b.style.opacity='.4';});
+  if(choice===sc.ans){beep('ok');confetti(20);}else beep('no');
+  nextSlide();
+}
+
+// ══ ESCAPE GAME ══
+function buildEscape(wrap){
+  // Titre
+  const ts=document.createElement('div');ts.className='slide';ts.id='s-tit-esc';
+  ts.innerHTML=`<div class="s-titre">
+    <div class="big-icon">🔐</div>
+    <h1>Mini <em style="color:#ef4444">Escape Game</em></h1>
+    <p>Trouvez les ${INDICES.length} erreurs du dossier RH !</p>
+  </div>${navBtns(false)}`;
+  wrap.appendChild(ts);slideIds.push('s-tit-esc');
+
+  // Diapo mission + tous les indices
+  const ms=document.createElement('div');ms.className='slide';ms.id='s-esc-main';
+  const allRepBtns=teams.map((t,i)=>`<button class="rb ${RBC[i]}" onclick="addScore(${i})">🏆 ${t} a trouvé</button>`).join('');
+  ms.innerHTML=`<div class="s-escape">
+    <div class="escape-header">
+      <h2>🔐 Mission : Audit du Dossier RH</h2>
+      <p>Vous êtes auditeur RH. ${INDICES.length} erreurs graves ont été commises cette semaine.<br><strong>Cliquez sur chaque dossier pour révéler l'indice, puis trouvez les erreurs !</strong></p>
+    </div>
+    ${INDICES.map((idx,i)=>`
+    <div class="indice-card" id="indice-${i}" onclick="revealIndice(${i})">
+      <div class="indice-top">
+        <div class="indice-icon">${idx.icon}</div>
+        <div>
+          <div class="indice-label">${idx.label}</div>
+          <div class="indice-hint">Clique pour révéler l'indice...</div>
+        </div>
+      </div>
+      <div class="indice-content">${idx.ctx}</div>
+      <div class="indice-answer">❌ Erreur : ${idx.error}</div>
+    </div>`).join('')}
+    <div class="escape-question">❓ Quelles sont les ${INDICES.length} erreurs commises ?</div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:1rem;">
+      <button class="nbtn nbtn-green" onclick="document.getElementById('esc-rep').classList.add('show');beep('ok');confetti(30);">✅ Révéler les réponses</button>
+      ${allRepBtns}
+    </div>
+    <div class="escape-rep-box" id="esc-rep">
+      <div style="font-size:16px;font-weight:700;color:#46e891;margin-bottom:.8rem;">✅ Les ${INDICES.length} erreurs :</div>
+      ${INDICES.map((idx,i)=>`<div style="font-size:14px;color:#e2e8f0;margin-bottom:.4rem;">❌ ${idx.error}</div>`).join('')}
+    </div>
+  </div>${navBtns(true,slideIds.length+2)}`;
+  wrap.appendChild(ms);slideIds.push('s-esc-main');
+}
+
+function revealIndice(i){
+  document.getElementById(`indice-${i}`).classList.add('revealed');
+  beep('ding');
+}
+
+// ══ PODIUM ══
+function buildPodium(){
+  beep('win');confetti(70);
+  const sorted=[...teams.map((t,i)=>({name:t,score:scores[i],hex:TH[i]}))].sort((a,b)=>b.score-a.score);
+  const stage=document.getElementById('podium-stage');
+  const full=document.getElementById('full-rank');
+  if(!stage||!full)return;
+  stage.innerHTML='';full.innerHTML='';
+  const order=[1,0,2],blockH=['pb2','pb1','pb3'],nums=['2','1','3'];
+  order.forEach((rank,pos)=>{
+    const p=sorted[rank];if(!p)return;
+    const col=document.createElement('div');col.className='pd-col';
+    col.innerHTML=`<div class="pd-name" style="color:${p.hex}">${p.name}</div>
+      <div class="pd-pts">${p.score} pts</div>
+      <div class="pd-block ${blockH[pos]}"><div class="pd-num">${nums[pos]}</div></div>`;
+    stage.appendChild(col);
+  });
+  const medals=['🥇','🥈','🥉','4️⃣'];
+  sorted.forEach((p,i)=>{
+    const d=document.createElement('div');d.className='fr-row';
+    d.innerHTML=`<span style="font-size:18px">${medals[i]}</span><span style="flex:1;font-weight:700;color:${p.hex}">${p.name}</span><span style="font-weight:900;color:#fbbf24">${p.score} pts</span>`;
+    full.appendChild(d);
+  });
+}
+
+// ══ ÉDITEUR ══
+let currentEditTab='scenario';
+
+function switchTab(tab){
+  currentEditTab=tab;
+  document.querySelectorAll('.etab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.edit-section').forEach(s=>s.classList.remove('on'));
+  document.getElementById('tab-'+tab).classList.add('on');
+  document.getElementById('edit-'+tab).classList.add('on');
+}
+
+function renderEditor(){
+  renderScenarios();
+  renderEscape();
+}
+
+function renderScenarios(){
+  const wrap=document.getElementById('scen-items');
+  wrap.innerHTML='';
+  SCENARIOS.forEach((sc,i)=>{
+    const d=document.createElement('div');d.className='item-card';
+    d.innerHTML=`<div class="item-card-header">
+      <div class="item-num">🎬 Scénario ${i+1}</div>
+      <button class="item-del" onclick="deleteScenario(${i})">🗑 Supprimer</button>
+    </div>
+    <div class="edit-label">CONTEXTE (la situation)</div>
+    <textarea class="edit-textarea" id="sc-ctx-${i}" placeholder="Décris la situation concrète...">${sc.ctx}</textarea>
+    <div class="edit-label">QUESTION</div>
+    <input class="edit-input" id="sc-q-${i}" value="${sc.q}" placeholder="Que fais-tu ?">
+    <div class="edit-label">RÉPONSES (2 à 4)</div>
+    <div class="opts-grid">
+      ${[0,1,2,3].map(j=>`<input class="edit-input" id="sc-opt-${i}-${j}" value="${sc.opts[j]||''}" placeholder="${'ABCD'[j]}) Option ${j+1}">`).join('')}
+    </div>
+    <div class="edit-label">BONNE RÉPONSE</div>
+    <select class="ans-select" id="sc-ans-${i}">
+      ${[0,1,2,3].map(j=>`<option value="${j}" ${sc.ans===j?'selected':''}>${'ABCD'[j]})</option>`).join('')}
+    </select>
+    <div class="edit-label">EXPLICATION (après la réponse)</div>
+    <textarea class="edit-textarea" id="sc-rep-${i}" placeholder="Explique pourquoi...">${sc.rep}</textarea>
+    <div class="edit-label">RÉFÉRENCE LÉGALE</div>
+    <input class="edit-input" id="sc-loi-${i}" value="${sc.loi}" placeholder="Art. L.xxxx C. trav.">`;
+    wrap.appendChild(d);
+  });
+}
+
+function renderEscape(){
+  const wrap=document.getElementById('escape-items');
+  wrap.innerHTML='';
+  INDICES.forEach((idx,i)=>{
+    const d=document.createElement('div');d.className='item-card';
+    d.innerHTML=`<div class="item-card-header">
+      <div class="item-num">🔐 Indice ${i+1}</div>
+      <button class="item-del" onclick="deleteIndice(${i})">🗑 Supprimer</button>
+    </div>
+    <div class="edit-label">ICÔNE (emoji)</div>
+    <input class="edit-input" id="esc-icon-${i}" value="${idx.icon}" placeholder="📋" style="width:80px">
+    <div class="edit-label">NOM DU DOSSIER</div>
+    <input class="edit-input" id="esc-label-${i}" value="${idx.label}" placeholder="Dossier 1 — Prénom">
+    <div class="edit-label">CONTENU DE L'INDICE (ce que le salarié a vécu)</div>
+    <textarea class="edit-textarea" id="esc-ctx-${i}" placeholder="Décris la situation...">${idx.ctx}</textarea>
+    <div class="edit-label">L'ERREUR COMMISE (réponse à trouver)</div>
+    <input class="edit-input" id="esc-error-${i}" value="${idx.error}" placeholder="Ex: Salarié a commencé SANS validation RH">`;
+    wrap.appendChild(d);
+  });
+}
+
+function addScenario(){
+  SCENARIOS.push({ctx:"Décris la situation ici...",q:"Que fais-tu ?",opts:["Option A","Option B","Option C",""],ans:0,rep:"Explication ici.",loi:"Référence légale"});
+  renderScenarios();
+  // Scroll vers le bas
+  document.getElementById('edit-scenario').lastElementChild.scrollIntoView({behavior:'smooth'});
+}
+
+function addIndice(){
+  INDICES.push({icon:"📋",label:"Nouveau dossier",ctx:"Décris la situation ici...",error:"L'erreur commise"});
+  renderEscape();
+}
+
+function deleteScenario(i){
+  if(SCENARIOS.length<=1){alert('Il faut au moins 1 scénario !');return;}
+  if(confirm('Supprimer ce scénario ?')){SCENARIOS.splice(i,1);renderScenarios();}
+}
+
+function deleteIndice(i){
+  if(INDICES.length<=1){alert('Il faut au moins 1 indice !');return;}
+  if(confirm('Supprimer cet indice ?')){INDICES.splice(i,1);renderEscape();}
+}
+
+function saveData(){
+  // Lire scénarios
+  SCENARIOS.forEach((sc,i)=>{
+    sc.ctx=document.getElementById(`sc-ctx-${i}`).value.trim();
+    sc.q=document.getElementById(`sc-q-${i}`).value.trim();
+    sc.opts=[0,1,2,3].map(j=>document.getElementById(`sc-opt-${i}-${j}`).value.trim()).filter(o=>o);
+    sc.ans=parseInt(document.getElementById(`sc-ans-${i}`).value);
+    sc.rep=document.getElementById(`sc-rep-${i}`).value.trim();
+    sc.loi=document.getElementById(`sc-loi-${i}`).value.trim();
+  });
+  // Lire escape
+  INDICES.forEach((idx,i)=>{
+    idx.icon=document.getElementById(`esc-icon-${i}`).value.trim();
+    idx.label=document.getElementById(`esc-label-${i}`).value.trim();
+    idx.ctx=document.getElementById(`esc-ctx-${i}`).value.trim();
+    idx.error=document.getElementById(`esc-error-${i}`).value.trim();
+  });
+  saveToStorage();
+  updateMenuCounts();
+  const ok=document.getElementById('save-ok');
+  ok.style.display='inline';
+  setTimeout(()=>ok.style.display='none',2500);
+  beep('ok');confetti(15);
+}
+
+// Init
+updateMenuCounts();
+</script>
+
+
+</body></html>
